@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String
+  phone     String?
+  role      Role      @default(CLIENT)
+  address   String?
+  orders    Order[]
+  reviews   Review[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String   // e.g. "cucarachas", "roedores", etc.
+  description String?
+  basePrice   Float    // e.g. 180000
+  orders      Order[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  serviceId     String
+  service       Service   @relation(fields: [serviceId], references: [id])
+  plagueType    String
+  areaSize      Float     // Size in m²
+  propertyType  String
+  totalPrice    Float
+  status        OrderStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  paymentId     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+}

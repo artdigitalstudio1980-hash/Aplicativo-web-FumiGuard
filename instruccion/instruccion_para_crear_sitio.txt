@@ -1,0 +1,249 @@
+Crea una aplicación completa para una empresa de fumigación y control de plagas en Bogotá, Colombia.
+
+IMPORTANTE:
+La aplicación debe construirse COMPLETAMENTE en UNA SOLA CARPETA para evitar errores de despliegue en Hostinger.
+
+NO crear:
+
+* /frontend
+* /backend
+
+Todo debe convivir en una sola estructura de proyecto.
+
+Objetivo:
+Evitar errores HTTP 503 en Hostinger causados por separación incorrecta del frontend y backend.
+
+---
+
+# STACK TECNOLÓGICO
+
+Frontend:
+
+* Next.js
+* TypeScript
+* Tailwind CSS
+
+Backend:
+
+* Node.js
+* Express.js
+* TypeScript
+
+Base de datos:
+
+* MySQL (Hostinger)
+
+ORM:
+
+* Prisma
+
+Pagos:
+
+* Stripe
+
+Hosting:
+
+* Hostinger
+
+Repositorio:
+
+* GitHub
+
+Despliegue:
+
+* GitHub → Hostinger
+
+Correo:
+
+* usar correo SMTP de Hostinger
+
+---
+
+# ESTRUCTURA DEL PROYECTO
+
+TODO debe vivir en una sola carpeta.
+
+Usar estructura compatible con despliegue Node.js en Hostinger.
+
+Ejemplo esperado:
+
+/app
+/components
+/lib
+/prisma
+/public
+/styles
+/server
+/routes
+/controllers
+/middlewares
+/services
+/package.json
+/next.config.js
+/tsconfig.json
+
+NO crear proyectos separados.
+
+El servidor Express debe ejecutarse junto con Next.js desde el mismo proyecto.
+
+---
+
+# FUNCIONALIDAD DEL NEGOCIO
+
+Empresa de fumigación y control de plagas en Bogotá.
+
+Servicios:
+
+* cucarachas
+* roedores
+* termitas
+* hormigas
+* mosquitos
+* desinfección
+* lavado de tanques
+
+Precio mínimo:
+
+* 180.000 COP
+
+La calculadora debe usar:
+
+* tipo de plaga
+* tamaño en m²
+* tipo de inmueble
+
+Generar precio estimado automáticamente.
+
+---
+
+# PÁGINAS WEB
+
+* Home
+* About
+* Cómo funciona
+* Catálogo de servicios
+* Calculadora de precios
+* Checkout
+* Login
+* Registro
+* Contacto
+* FAQ
+* Testimonios
+* Dashboard cliente
+
+---
+
+# DASHBOARD CLIENTE
+
+Permitir:
+
+* ver historial
+* ver pagos
+* ver servicios
+* descargar certificados
+* editar perfil
+
+---
+
+# FUNCIONALIDAD BACKEND
+
+Crear APIs con Express.
+
+Endpoints:
+
+* auth
+* users
+* services
+* orders
+* payments
+* reviews
+
+Usar Prisma para MySQL.
+
+---
+
+# STRIPE
+
+Integrar Stripe correctamente.
+
+Permitir:
+
+* pagos con tarjeta
+* confirmación de pago
+* guardar estado de pago
+* webhooks
+
+---
+
+# SEGURIDAD
+
+MUY IMPORTANTE.
+
+Implementar:
+
+* bcrypt
+* JWT
+* validación de inputs
+* sanitización
+* protección XSS
+* protección SQL Injection
+* variables .env
+* manejo seguro de sesiones
+* cookies httpOnly
+* HTTPS ready
+
+Los datos sensibles deben estar protegidos y cifrados.
+
+---
+
+# HOSTINGER
+
+El proyecto debe estar optimizado específicamente para Hostinger.
+
+Verificar:
+
+* scripts correctos
+* build correcto
+* start correcto
+* puertos correctos
+* compatibilidad Node.js
+* compatibilidad MySQL Hostinger
+
+Evitar completamente errores HTTP 503.
+
+---
+
+# DEPLOYMENT
+
+Flujo esperado:
+
+1. Crear código localmente
+2. Git init
+3. Git add .
+4. Git commit
+5. Git push GitHub
+6. Hostinger descarga automáticamente
+7. Deploy exitoso sin errores
+
+---
+
+# IMPORTANTE
+
+* Código limpio
+* Escalable
+* Modular
+* Profesional
+* Preparado para producción
+
+Antes de finalizar:
+
+* verificar que Next.js y Express funcionen juntos
+* verificar que el frontend cargue correctamente
+* verificar que no exista error 503
+* verificar que Hostinger pueda ejecutar el proyecto correctamente
+* verificar conexión MySQL
+* verificar Stripe
+
+No asumir configuraciones.
+Analizar compatibilidad real con Hostinger.
+
