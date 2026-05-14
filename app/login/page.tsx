@@ -26,54 +26,61 @@ export default function Login() {
         const data = await res.json();
         setError(data.error || 'Error al iniciar sesión');
       }
-    } catch (err) {
+    } catch {
       setError('Error de red');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-950">
-      <div className="max-w-md w-full glass-panel p-10 rounded-3xl">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+    <div className="min-h-screen flex items-center justify-center py-32 px-4 sm:px-6 lg:px-8 bg-slate-50 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 transform translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 transform -translate-x-1/2 translate-y-1/2"></div>
+      
+      <div className="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 relative z-10">
+        <div className="text-center mb-10">
+          <img src="/img/logo.png" alt="FUMIGUARD" className="w-16 h-16 mx-auto mb-4" />
+          <h2 className="text-3xl font-extrabold text-gray-900">
             Iniciar Sesión
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            O{' '}
-            <Link href="/register" className="font-medium text-emerald-400 hover:text-emerald-300">
-              regístrate si eres nuevo
+          <p className="mt-3 text-sm text-gray-500">
+            ¿No tienes cuenta?{' '}
+            <Link href="/register" className="font-bold text-emerald-600 hover:text-emerald-500 transition-colors">
+              Regístrate aquí
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          {error && <div className="bg-red-50 text-red-500 p-4 rounded-2xl text-sm text-center font-medium border border-red-100">{error}</div>}
           <div className="space-y-4">
             <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
               <input
                 type="email"
                 required
-                className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="Correo Electrónico"
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                placeholder="juan@ejemplo.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Contraseña</label>
               <input
                 type="password"
                 required
-                className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-emerald-500 outline-none"
-                placeholder="Contraseña"
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
 
-          <div>
+          <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-emerald-500 text-white font-bold text-lg hover:bg-emerald-400 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+              className="btn btn-primary w-full !py-4 text-lg"
             >
               Entrar al Dashboard
             </button>
