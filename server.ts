@@ -16,8 +16,12 @@ import ordersRoutes from './routes/ordersRoutes';
 dotenv.config();
 
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = 'localhost';
+const hostname = dev ? 'localhost' : '0.0.0.0';
 const port = parseInt(process.env.PORT || '3000', 10);
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 // Initialize Next.js
 const app = next({ dev, hostname, port });
@@ -49,10 +53,12 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+  server.listen(port, hostname, () => {
+    console.log(`> Ready on http://${hostname}:${port}`);
+    console.log(`> Environment: ${process.env.NODE_ENV}`);
   });
 }).catch((err) => {
-  console.error('Error starting server:', err);
+  console.error('FATAL: Error during server initialization:');
+  console.error(err);
   process.exit(1);
 });

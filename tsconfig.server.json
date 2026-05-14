@@ -7,5 +7,5 @@
     "noEmit": false,
     "isolatedModules": false
   },
-  "include": ["server.ts", "server/**/*", "routes/**/*", "controllers/**/*", "middlewares/**/*", "services/**/*"]
+  "include": ["server.ts", "routes/**/*", "controllers/**/*", "middlewares/**/*", "services/**/*", "lib/**/*"]
 }
