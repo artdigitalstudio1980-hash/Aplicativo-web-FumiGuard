@@ -44,7 +44,7 @@ export default function Navbar() {
           <Link href="/login" className="text-gray-600 hover:text-emerald-500 font-medium hidden sm:block">
             Iniciar sesión
           </Link>
-          <Link href="/login?tab=register" className="btn btn-primary !py-2.5 !px-6 !bg-emerald-600 hover:!bg-emerald-700">
+          <Link href="/register" className="btn btn-primary !py-2.5 !px-6 !bg-emerald-600 hover:!bg-emerald-700">
             Registrarse
           </Link>
         </div>
