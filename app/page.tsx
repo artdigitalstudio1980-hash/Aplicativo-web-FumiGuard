@@ -11,7 +11,7 @@ export default function Home() {
         
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8">
-            Control de Plagas <span className="text-gradient">Premium</span> en Bogotá
+            Control de Plagas <span className="text-gradient">Premium</span>
           </h1>
           <p className="mt-4 text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
             Protegemos tu hogar y empresa con tecnología avanzada y protocolos de bioseguridad. Soluciones definitivas, seguras y garantizadas.
