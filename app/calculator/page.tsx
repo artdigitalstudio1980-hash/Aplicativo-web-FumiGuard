@@ -1,100 +1,91 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Calculator as CalcIcon, CheckCircle, ArrowRight } from 'lucide-react';
 
-export default function Calculator() {
-  const router = useRouter();
-  const [plagueType, setPlagueType] = useState('cucarachas');
-  const [areaSize, setAreaSize] = useState(50);
-  const [propertyType, setPropertyType] = useState('apartamento');
-
-  // Base price: Minimum 180,000 COP
-  // Assuming base price of standard service is 180,000. For > 100m2, add 1,000 COP per extra m2.
-  let calculatedPrice = 180000;
-  if (areaSize > 100) {
-    calculatedPrice += (areaSize - 100) * 1000;
-  }
+export default function PriceCalculator() {
+  const [m2, setM2] = useState(50);
+  const [propertyType, setPropertyType] = useState('Residencial');
   
-  if (propertyType === 'comercial') {
-    calculatedPrice *= 1.2; // 20% extra for commercial
-  }
-  if (propertyType === 'industrial') {
-    calculatedPrice *= 1.5; // 50% extra for industrial
-  }
-
-  const handleCheckout = () => {
-    // In a real app, we'd save to context or redirect to login then checkout
-    router.push('/login?redirect=checkout');
+  const calculatePrice = () => {
+    const basePrice = 180000;
+    const areaMultiplier = m2 > 100 ? 1 + (m2 - 100) * 0.005 : 1;
+    const typeMultiplier = propertyType === 'Comercial' ? 1.2 : (propertyType === 'Industrial' ? 1.5 : 1);
+    return Math.round(basePrice * areaMultiplier * typeMultiplier);
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-slate-950">
-      <div className="max-w-3xl mx-auto glass-panel p-8 md:p-12 rounded-3xl">
-        <h1 className="text-4xl font-bold mb-8 text-center">Calculadora de Precio</h1>
-        <p className="text-gray-400 text-center mb-10">Obtén un presupuesto inmediato para tu servicio de control de plagas.</p>
+    <div className="min-h-screen bg-slate-50 py-32 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-gradient">Calculadora de Precio</h1>
+          <p className="text-xl text-gray-500">Cotiza tu servicio de fumigación en tiempo real.</p>
+        </div>
 
-        <div className="space-y-8">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">Tipo de Plaga</label>
-            <select 
-              value={plagueType}
-              onChange={(e) => setPlagueType(e.target.value)}
-              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-            >
-              <option value="cucarachas">Cucarachas</option>
-              <option value="roedores">Roedores</option>
-              <option value="termitas">Termitas</option>
-              <option value="hormigas">Hormigas</option>
-              <option value="mosquitos">Mosquitos</option>
-              <option value="desinfeccion">Desinfección General</option>
-              <option value="lavado_tanques">Lavado de Tanques</option>
-            </select>
-          </div>
+        <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="space-y-8">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-4 flex justify-between">
+                <span>Área Aproximada: {m2} m²</span>
+              </label>
+              <input 
+                type="range" 
+                min="20" 
+                max="1000" 
+                value={m2}
+                onChange={(e) => setM2(parseInt(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">Tipo de Inmueble</label>
-            <select 
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value)}
-              className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-            >
-              <option value="apartamento">Apartamento / Casa</option>
-              <option value="comercial">Local Comercial / Oficina</option>
-              <option value="industrial">Industrial / Bodega</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">
-              Tamaño del Área ({areaSize} m²)
-            </label>
-            <input 
-              type="range" 
-              min="20" 
-              max="500" 
-              step="10"
-              value={areaSize}
-              onChange={(e) => setAreaSize(Number(e.target.value))}
-              className="w-full accent-emerald-500"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-2">
-              <span>20 m²</span>
-              <span>500+ m²</span>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-4">Tipo de Inmueble</label>
+              <div className="grid grid-cols-1 gap-3">
+                {['Residencial', 'Comercial', 'Industrial'].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setPropertyType(type)}
+                    className={`px-6 py-4 rounded-2xl text-left font-semibold transition-all border-2 ${
+                      propertyType === type 
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm' 
+                        : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="pt-8 mt-8 border-t border-white/10 text-center">
-            <h3 className="text-xl text-gray-400 mb-2">Precio Estimado</h3>
-            <div className="text-5xl font-bold text-gradient mb-8">
-              ${new Intl.NumberFormat('es-CO').format(calculatedPrice)} COP
+          <div className="bg-slate-900 rounded-3xl p-10 text-white flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-6 opacity-60">
+                <CalcIcon size={20} />
+                <span className="text-sm font-bold tracking-widest uppercase">Estimación Total</span>
+              </div>
+              <div className="text-5xl font-extrabold mb-4">
+                ${calculatePrice().toLocaleString('es-CO')}
+                <span className="text-lg font-normal text-slate-400 block mt-2">COP (IVA incluido)</span>
+              </div>
+              <ul className="space-y-4 mt-8">
+                <li className="flex items-center gap-3 text-sm text-slate-300">
+                  <CheckCircle size={18} className="text-emerald-400" />
+                  Certificado de Sanidad incluído
+                </li>
+                <li className="flex items-center gap-3 text-sm text-slate-300">
+                  <CheckCircle size={18} className="text-emerald-400" />
+                  Garantía de 6 meses
+                </li>
+                <li className="flex items-center gap-3 text-sm text-slate-300">
+                  <CheckCircle size={18} className="text-emerald-400" />
+                  Técnicos certificados
+                </li>
+              </ul>
             </div>
-            
-            <button 
-              onClick={handleCheckout}
-              className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold text-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
-            >
-              Agendar Servicio
+            <button className="btn btn-primary w-full !py-4 mt-8 text-lg">
+              Agendar Ahora
+              <ArrowRight size={20} />
             </button>
           </div>
         </div>

@@ -1,26 +1,54 @@
-import Link from 'next/link';
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const isActive = (path: string) => pathname === path;
+
   return (
-    <nav className="fixed w-full z-50 top-0 glass-panel border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-gradient">FUMIGUARD</span>
-            </Link>
-          </div>
-          <div className="hidden md:flex space-x-8 items-center">
-            <Link href="/about" className="text-gray-300 hover:text-white transition-colors">Nosotros</Link>
-            <Link href="/catalog" className="text-gray-300 hover:text-white transition-colors">Servicios</Link>
-            <Link href="/calculator" className="text-gray-300 hover:text-white transition-colors">Calculadora</Link>
-            <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">Contacto</Link>
-            <Link href="/login" className="px-6 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all">
-              Portal Cliente
-            </Link>
-          </div>
+    <header className="header">
+      <div className="container">
+        <Link href="/" className="logo">
+          🔰 FUMIGUARD
+        </Link>
+
+        <nav className={`nav ${menuOpen ? "flex flex-col absolute top-full left-0 w-full bg-white p-4 shadow-lg" : ""}`}>
+          <Link href="/" className={isActive("/") ? "active" : ""}>
+            Inicio
+          </Link>
+          <Link href="/about" className={isActive("/about") ? "active" : ""}>
+            Nosotros
+          </Link>
+          <Link href="/catalog" className={isActive("/catalog") ? "active" : ""}>
+            Servicios
+          </Link>
+          <Link href="/calculator" className={isActive("/calculator") ? "active" : ""}>
+            Calculadora
+          </Link>
+          <Link href="/contact" className={isActive("/contact") ? "active" : ""}>
+            Contacto
+          </Link>
+        </nav>
+
+        <div className="header-actions flex gap-4 items-center">
+          <Link href="/login" className="text-gray-600 hover:text-emerald-500 font-medium">
+            Entrar
+          </Link>
+          <Link href="/login?tab=register" className="btn btn-primary !py-2 !px-6">
+            Registrarse
+          </Link>
         </div>
+
+        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
-    </nav>
+    </header>
   );
 }
