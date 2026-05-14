@@ -15,7 +15,8 @@ export default function Navbar() {
     <header className="header">
       <div className="container">
         <Link href="/" className="logo">
-          🔰 FUMIGUARD
+          <img src="/img/logo.png" alt="FUMIGUARD" className="w-10 h-10 object-contain" />
+          <span>FUMIGUARD</span>
         </Link>
 
         <nav className={`nav ${menuOpen ? "flex flex-col absolute top-full left-0 w-full bg-white p-4 shadow-lg" : ""}`}>

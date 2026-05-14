@@ -29,7 +29,8 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="md:col-span-1">
               <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
-                🔰 FUMIGUARD
+                <img src="/img/logo.png" alt="FUMIGUARD" className="w-8 h-8 object-contain" />
+                FUMIGUARD
               </Link>
               <p className="mt-6 text-sm text-slate-400 leading-relaxed">
                 Servicios profesionales de fumigación para tu hogar y empresa.

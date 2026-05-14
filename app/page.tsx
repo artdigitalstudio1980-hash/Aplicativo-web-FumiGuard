@@ -20,8 +20,12 @@ export default function HomePage() {
   return (
     <main className="home-page">
       {/* Hero Section */}
-      <section className="hero min-h-[80vh] flex items-center justify-center text-center">
-        <div className="container">
+      <section className="hero min-h-[90vh] flex items-center justify-center text-center relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="/img/hero.png" alt="Fumigación Profesional" className="w-full h-full object-cover opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white"></div>
+        </div>
+        <div className="container relative z-10">
           <div className="max-w-4xl mx-auto">
             <span className="inline-block bg-white text-emerald-600 px-4 py-1 rounded-full text-sm font-semibold mb-6 shadow-sm border border-emerald-50">
               Profesionales de confianza
@@ -67,6 +71,7 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">Nuestros Servicios</h2>
             <p className="text-slate-500 text-lg">Tratamientos profesionales para cada tipo de plaga</p>
+            <img src="/img/services.png" alt="Nuestros Servicios" className="w-full rounded-3xl shadow-xl mb-16 border border-slate-100" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service) => (
