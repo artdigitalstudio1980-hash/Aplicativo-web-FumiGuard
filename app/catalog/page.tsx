@@ -22,16 +22,25 @@ export default function Catalog() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service) => (
-            <div key={service.id} className="glass-panel p-8 rounded-2xl flex flex-col hover:-translate-y-2 transition-transform duration-300">
-              <h3 className="text-2xl font-bold text-white mb-4">{service.name}</h3>
-              <p className="text-gray-400 flex-grow mb-8">{service.desc}</p>
-              <Link 
-                href="/calculator" 
-                className="text-center w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white transition-all text-emerald-400 font-semibold"
-              >
-                Cotizar este servicio
-              </Link>
+          {services.map((service, index) => (
+            <div key={service.id} className="glass-panel rounded-2xl flex flex-col hover:-translate-y-2 transition-transform duration-300 overflow-hidden">
+              <div className="h-48 w-full bg-slate-800 relative">
+                <img 
+                  src={`/img/service${(index % 5) + 1}.jpeg`} 
+                  alt={service.name} 
+                  className="w-full h-full object-cover opacity-80"
+                />
+              </div>
+              <div className="p-8 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold text-white mb-4">{service.name}</h3>
+                <p className="text-gray-400 flex-grow mb-8">{service.desc}</p>
+                <Link 
+                  href="/calculator" 
+                  className="text-center w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white transition-all text-emerald-400 font-semibold"
+                >
+                  Cotizar este servicio
+                </Link>
+              </div>
             </div>
           ))}
         </div>

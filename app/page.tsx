@@ -27,6 +27,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Gallery Section */}
+      <section className="py-24 bg-slate-950 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">Nuestros Servicios en <span className="text-gradient">Acción</span></h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">Resultados profesionales respaldados por años de experiencia en el control de plagas.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5].map((num) => (
+              <div key={num} className="group relative rounded-2xl overflow-hidden glass-panel aspect-[4/3]">
+                <img 
+                  src={`/img/service${num}.jpeg`} 
+                  alt={`Fumigación profesional ${num}`}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                  <span className="text-white font-semibold text-lg">Efectividad Garantizada</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-24 bg-slate-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
