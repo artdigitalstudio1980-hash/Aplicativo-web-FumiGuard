@@ -1,129 +1,149 @@
 "use client";
 
 import Link from "next/link";
-import { Calculator, Shield, Clock, Award, ArrowRight } from "lucide-react";
+import { Calculator, ArrowRight, Shield, Clock, Award, Star } from "lucide-react";
 
 const services = [
-  { id: "cucarachas", name: "Cucarachas", icon: "🦟", price: "Desde $180k" },
-  { id: "roedores", name: "Roedores", icon: "🐀", price: "Desde $180k" },
-  { id: "termitas", name: "Termitas", icon: "🏠", price: "Desde $250k" },
-  { id: "hormigas", name: "Hormigas", icon: "🐜", price: "Desde $150k" },
+  { id: "cucarachas", name: "Control de Cucarachas", icon: "🦟", price: "Desde $80.000" },
+  { id: "hormigas", name: "Control de Hormigas", icon: "🐜", price: "Desde $70.000" },
+  { id: "roedores", name: "Control de Roedores", icon: "🐀", price: "Desde $120.000" },
+  { id: "termitas", name: "Control de Termitas", icon: "🏠", price: "Desde $250.000" },
+];
+
+const testimonials = [
+  { name: "María G.", text: "Excelente servicio, muy profesionales." },
+  { name: "Carlos M.", text: "El técnico llegó a tiempo, muy recomendado." },
+  { name: "Laura R.", text: "Problema resuelto desde la primera visita." },
 ];
 
 export default function HomePage() {
   return (
     <main className="home-page">
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero min-h-[80vh] flex items-center justify-center text-center">
         <div className="container">
-          <div className="hero-content">
-            <span className="hero-badge">Técnicos Certificados en Control de Plagas</span>
-            <h1 className="text-gradient">Control de Plagas Profesional y Garantizado</h1>
-            <p className="hero-subtitle">
-              Protegemos tu hogar o empresa con tecnología avanzada. Calcula el precio de tu servicio en segundos.
+          <div className="max-w-4xl mx-auto">
+            <span className="inline-block bg-white text-emerald-600 px-4 py-1 rounded-full text-sm font-semibold mb-6 shadow-sm border border-emerald-50">
+              Profesionales de confianza
+            </span>
+            <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-6 leading-tight">
+              Elimina las plagas de tu hogar o empresa
+            </h1>
+            <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
+              Servicios profesionales de fumigación con técnicos certificados. Precios justos y garantizados.
             </p>
-            <div className="hero-actions">
-              <Link href="/calculator" className="btn btn-primary">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+              <Link href="/calculator" className="btn btn-primary !bg-emerald-600 hover:!bg-emerald-700 flex items-center gap-2">
                 <Calculator size={20} />
                 Calcular Precio
               </Link>
-              <Link href="/catalog" className="btn btn-outline">
-                Ver Servicios
+              <Link href="/about" className="btn btn-outline flex items-center gap-2">
+                Cómo funciona
                 <ArrowRight size={18} />
               </Link>
             </div>
-            <div className="hero-stats">
+            
+            <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-8 border-t border-slate-100">
               <div className="stat-item">
-                <span className="stat-number">5000+</span>
-                <span className="stat-label">Servicios Realizados</span>
+                <span className="text-3xl font-bold text-emerald-600 block">5000+</span>
+                <span className="text-sm text-slate-500">Servicios</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">100%</span>
-                <span className="stat-label">Efectividad</span>
+                <span className="text-3xl font-bold text-emerald-600 block">4.9</span>
+                <span className="text-sm text-slate-500">Rating</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">24h</span>
-                <span className="stat-label">Respuesta Rápida</span>
+                <span className="text-3xl font-bold text-emerald-600 block">24h</span>
+                <span className="text-sm text-slate-500">Respuesta</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Preview */}
-      <section className="services-section">
+      {/* Services Section */}
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Nuestros <span className="text-gradient">Servicios</span></h2>
-            <p className="text-gray-500 text-lg">Soluciones especializadas para cada tipo de infestación</p>
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Nuestros Servicios</h2>
+            <p className="text-slate-500 text-lg">Tratamientos profesionales para cada tipo de plaga</p>
           </div>
-          <div className="services-grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service) => (
-              <Link key={service.id} href="/calculator" className="service-card">
-                <span className="service-icon">{service.icon}</span>
-                <h3>{service.name}</h3>
-                <span className="service-price">{service.price}</span>
-              </Link>
+              <div key={service.id} className="bg-white border border-slate-100 p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-center group">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform inline-block">
+                  {service.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">{service.name}</h3>
+                <p className="text-emerald-600 font-bold">{service.price}</p>
+              </div>
             ))}
+          </div>
+          <div className="text-center mt-12">
+            <Link href="/catalog" className="text-emerald-600 font-bold flex items-center justify-center gap-2 hover:underline">
+              Ver todos los servicios
+              <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Gallery Section */}
+      {/* Features Section */}
       <section className="py-24 bg-slate-50">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Calidad en <span className="text-gradient">Cada Visita</span></h2>
-            <p className="text-gray-500 text-lg">Mira cómo trabajan nuestros expertos</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-10 rounded-2xl shadow-sm text-center">
+              <div className="flex justify-center mb-6 text-emerald-600"><Shield size={40} /></div>
+              <h3 className="text-xl font-bold mb-2">Técnicos Certificados</h3>
+              <p className="text-slate-500">Profesionales capacitados</p>
+            </div>
+            <div className="bg-white p-10 rounded-2xl shadow-sm text-center">
+              <div className="flex justify-center mb-6 text-emerald-600"><Clock size={40} /></div>
+              <h3 className="text-xl font-bold mb-2">Servicio Rápido</h3>
+              <p className="text-slate-500">En menos de 24 horas</p>
+            </div>
+            <div className="bg-white p-10 rounded-2xl shadow-sm text-center">
+              <div className="flex justify-center mb-6 text-emerald-600"><Award size={40} /></div>
+              <h3 className="text-xl font-bold mb-2">Garantía Escrita</h3>
+              <p className="text-slate-500">En todos los servicios</p>
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5].map((num) => (
-              <div key={num} className="group relative rounded-3xl overflow-hidden shadow-lg aspect-[4/3] bg-white">
-                <img 
-                  src={`/img/service${num}.jpeg`} 
-                  alt={`Fumigación profesional ${num}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <span className="text-white font-semibold text-lg">Procedimiento Certificado</span>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 bg-white">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Lo que dicen nuestros clientes</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {testimonials.map((t, i) => (
+              <div key={i} className="bg-slate-50 p-8 rounded-2xl shadow-sm">
+                <div className="flex gap-1 text-amber-400 mb-4">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
                 </div>
+                <p className="text-slate-700 italic mb-4">&quot;{t.text}&quot;</p>
+                <p className="text-slate-500 text-sm">- {t.name}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="section bg-white">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="card text-center">
-              <div className="flex justify-center mb-4 text-emerald-500"><Shield size={48} /></div>
-              <h3>Garantía Total</h3>
-              <p className="text-gray-500">Si la plaga vuelve en el periodo de garantía, nosotros también sin costo adicional.</p>
-            </div>
-            <div className="card text-center">
-              <div className="flex justify-center mb-4 text-emerald-500"><Clock size={48} /></div>
-              <h3>Atención 24/7</h3>
-              <p className="text-gray-500">Entendemos que las plagas no esperan. Estamos listos para atenderte en cualquier momento.</p>
-            </div>
-            <div className="card text-center">
-              <div className="flex justify-center mb-4 text-emerald-500"><Award size={48} /></div>
-              <h3>Personal Experto</h3>
-              <p className="text-gray-500">Técnicos altamente capacitados con los mejores equipos del mercado.</p>
-            </div>
+          <div className="text-center">
+            <Link href="/about" className="text-emerald-600 font-bold flex items-center justify-center gap-2 hover:underline">
+              Ver más testimonios
+              <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="cta-section container">
-        <div className="cta-card">
-          <h2>¿Listo para un espacio libre de plagas?</h2>
-          <p>Calcula tu presupuesto personalizado ahora mismo</p>
-          <Link href="/calculator" className="btn btn-white">
+      {/* CTA Section */}
+      <section className="container pb-24">
+        <div className="bg-emerald-600 rounded-3xl p-16 text-center text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">¿Listo para eliminar las plagas?</h2>
+          <p className="text-xl opacity-90 mb-10">Calcula tu precio en menos de 1 minuto</p>
+          <Link href="/calculator" className="bg-white text-emerald-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-colors inline-block">
             Calcular Ahora
-            <ArrowRight size={20} />
           </Link>
         </div>
       </section>

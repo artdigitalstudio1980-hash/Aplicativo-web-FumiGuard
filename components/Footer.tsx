@@ -4,56 +4,67 @@ import { Phone, Mail, MapPin } from "lucide-react";
 export default function Footer() {
   return (
     <>
-      <section className="contact-bar">
+      {/* Contact Bar */}
+      <section className="bg-slate-900 border-b border-slate-800 py-6">
         <div className="container">
-          <div className="contact-items">
-            <a href="tel:+573001234567" className="contact-item">
-              <Phone size={20} className="text-emerald-500" />
+          <div className="flex flex-col md:flex-row justify-center items-center gap-8 text-slate-300 text-sm">
+            <a href="tel:+573001234567" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
+              <Phone size={18} className="text-slate-500" />
               <span>300 123 4567</span>
             </a>
-            <a href="mailto:contacto@fumiguard.com" className="contact-item">
-              <Mail size={20} className="text-emerald-500" />
-              <span>contacto@fumiguard.com</span>
+            <a href="mailto:contacto@fumigacionesapp.com" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
+              <Mail size={18} className="text-slate-500" />
+              <span>contacto@fumigacionesapp.com</span>
             </a>
-            <span className="contact-item">
-              <MapPin size={20} className="text-emerald-500" />
+            <span className="flex items-center gap-2">
+              <MapPin size={18} className="text-slate-500" />
               <span>Bogotá, Colombia</span>
             </span>
           </div>
         </div>
       </section>
 
-      <footer className="footer">
+      <footer className="bg-slate-900 text-slate-300 py-20">
         <div className="container">
-          <div className="footer-grid">
-            <div className="footer-col">
-              <Link href="/" className="footer-logo">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div className="md:col-span-1">
+              <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
                 🔰 FUMIGUARD
               </Link>
-              <p className="text-gray-400 mt-4">
-                Servicios profesionales de fumigación y control de plagas con técnicos certificados. Resultados garantizados.
+              <p className="mt-6 text-sm text-slate-400 leading-relaxed">
+                Servicios profesionales de fumigación para tu hogar y empresa.
               </p>
             </div>
-            <div className="footer-col">
-              <h4>Servicios</h4>
-              <Link href="/catalog">Catálogo Completo</Link>
-              <Link href="/calculator">Calculadora de Precio</Link>
-              <Link href="/contact">Solicitar Asesoría</Link>
+            
+            <div className="md:col-span-1">
+              <h4 className="text-white font-bold mb-6">Servicios</h4>
+              <ul className="space-y-4 text-sm">
+                <li><Link href="/catalog" className="hover:text-emerald-500">Todos los servicios</Link></li>
+                <li><Link href="/calculator" className="hover:text-emerald-500">Calcular precio</Link></li>
+                <li><Link href="/contact" className="hover:text-emerald-500">Contacto</Link></li>
+              </ul>
             </div>
-            <div className="footer-col">
-              <h4>Empresa</h4>
-              <Link href="/about">Sobre Nosotros</Link>
-              <Link href="/testimonios">Testimonios</Link>
-              <Link href="/faq">Preguntas Frecuentes</Link>
+
+            <div className="md:col-span-1">
+              <h4 className="text-white font-bold mb-6">Empresa</h4>
+              <ul className="space-y-4 text-sm">
+                <li><Link href="/about" className="hover:text-emerald-500">Cómo funciona</Link></li>
+                <li><Link href="/about" className="hover:text-emerald-500">Testimonios</Link></li>
+                <li><Link href="/about" className="hover:text-emerald-500">Preguntas frecuentes</Link></li>
+              </ul>
             </div>
-            <div className="footer-col">
-              <h4>Legal</h4>
-              <Link href="/terminos">Términos y Condiciones</Link>
-              <Link href="/privacidad">Política de Privacidad</Link>
+
+            <div className="md:col-span-1">
+              <h4 className="text-white font-bold mb-6">Legal</h4>
+              <ul className="space-y-4 text-sm">
+                <li><Link href="/about" className="hover:text-emerald-500">Términos y condiciones</Link></li>
+                <li><Link href="/about" className="hover:text-emerald-500">Política de privacidad</Link></li>
+              </ul>
             </div>
           </div>
-          <div className="footer-bottom">
-            <p>&copy; {new Date().getFullYear()} FUMIGUARD. Todos los derechos reservados.</p>
+          
+          <div className="border-t border-slate-800 mt-20 pt-8 text-center text-xs text-slate-500">
+            <p>© {new Date().getFullYear()} FUMIGUARD. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

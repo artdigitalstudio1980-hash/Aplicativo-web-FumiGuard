@@ -23,7 +23,7 @@ export default function Navbar() {
             Inicio
           </Link>
           <Link href="/about" className={isActive("/about") ? "active" : ""}>
-            Nosotros
+            Cómo funciona
           </Link>
           <Link href="/catalog" className={isActive("/catalog") ? "active" : ""}>
             Servicios
@@ -31,16 +31,19 @@ export default function Navbar() {
           <Link href="/calculator" className={isActive("/calculator") ? "active" : ""}>
             Calculadora
           </Link>
-          <Link href="/contact" className={isActive("/contact") ? "active" : ""}>
-            Contacto
+          <Link href="/about" className={isActive("/about") ? "active" : ""}>
+            Testimonios
+          </Link>
+          <Link href="/about" className={isActive("/about") ? "active" : ""}>
+            FAQ
           </Link>
         </nav>
 
         <div className="header-actions flex gap-4 items-center">
-          <Link href="/login" className="text-gray-600 hover:text-emerald-500 font-medium">
-            Entrar
+          <Link href="/login" className="text-gray-600 hover:text-emerald-500 font-medium hidden sm:block">
+            Iniciar sesión
           </Link>
-          <Link href="/login?tab=register" className="btn btn-primary !py-2 !px-6">
+          <Link href="/login?tab=register" className="btn btn-primary !py-2.5 !px-6 !bg-emerald-600 hover:!bg-emerald-700">
             Registrarse
           </Link>
         </div>
