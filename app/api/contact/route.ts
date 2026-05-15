@@ -14,7 +14,8 @@ export async function POST(req: Request) {
     console.log('Nuevo mensaje de contacto recibido:', data);
 
     return NextResponse.json({ success: true, message: 'Mensaje recibido correctamente' }, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error('Error in contact API:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 }
