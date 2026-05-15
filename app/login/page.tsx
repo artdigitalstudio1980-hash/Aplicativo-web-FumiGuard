@@ -65,7 +65,12 @@ export default function Login() {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Contraseña</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-bold text-gray-700">Contraseña</label>
+                <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
               <input
                 type="password"
                 required

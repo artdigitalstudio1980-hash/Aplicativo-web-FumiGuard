@@ -11,7 +11,9 @@ export default function Register() {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    propertyType: 'Hogar',
+    acceptsOffers: true
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,9 @@ export default function Register() {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          password: formData.password
+          password: formData.password,
+          propertyType: formData.propertyType,
+          acceptsOffers: formData.acceptsOffers
         })
       });
       
@@ -101,16 +105,29 @@ export default function Register() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
-            <input
-              type="email"
-              required
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-              placeholder="juan@ejemplo.com"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
+              <input
+                type="email"
+                required
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                placeholder="juan@ejemplo.com"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Tipo de Propiedad</label>
+              <select
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all cursor-pointer appearance-none"
+                value={formData.propertyType}
+                onChange={(e) => setFormData({...formData, propertyType: e.target.value})}
+              >
+                <option value="Hogar">Hogar / Residencial</option>
+                <option value="Negocio">Negocio / Empresa (Certificado INVIMA)</option>
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -138,6 +155,19 @@ export default function Register() {
                 onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
               />
             </div>
+          </div>
+
+          <div className="flex items-start gap-3 mt-4">
+            <input
+              type="checkbox"
+              id="offers"
+              className="mt-1 w-5 h-5 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer"
+              checked={formData.acceptsOffers}
+              onChange={(e) => setFormData({...formData, acceptsOffers: e.target.checked})}
+            />
+            <label htmlFor="offers" className="text-sm text-gray-600 cursor-pointer select-none">
+              Quiero recibir promociones exclusivas, descuentos por fidelidad y recordatorios preventivos para mantener mi espacio libre de plagas.
+            </label>
           </div>
 
           <div className="pt-4">

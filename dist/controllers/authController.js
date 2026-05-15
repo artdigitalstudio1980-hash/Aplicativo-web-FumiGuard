@@ -39,34 +39,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.login = exports.register = void 0;
+exports.resetPassword = exports.forgotPassword = exports.logout = exports.login = exports.register = void 0;
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var prisma_1 = require("../lib/prisma");
 var zod_1 = require("zod");
+var crypto_1 = __importDefault(require("crypto"));
 var registerSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
     password: zod_1.z.string().min(6),
     name: zod_1.z.string().min(2),
-    phone: zod_1.z.string().optional()
+    phone: zod_1.z.string().optional(),
+    propertyType: zod_1.z.string().optional(),
+    acceptsOffers: zod_1.z.boolean().optional()
 });
 var register = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, name_1, phone, existingUser, hashedPassword, user, error_1;
+    var _a, email, password, name_1, phone, propertyType, acceptsOffers, existingUser, hashedPassword, user, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 4, , 5]);
-                _a = registerSchema.parse(req.body), email = _a.email, password = _a.password, name_1 = _a.name, phone = _a.phone;
+                _a = registerSchema.parse(req.body), email = _a.email, password = _a.password, name_1 = _a.name, phone = _a.phone, propertyType = _a.propertyType, acceptsOffers = _a.acceptsOffers;
                 return [4 /*yield*/, prisma_1.prisma.user.findUnique({ where: { email: email } })];
             case 1:
                 existingUser = _b.sent();
                 if (existingUser)
-                    return [2 /*return*/, res.status(400).json({ error: 'User already exists' })];
+                    return [2 /*return*/, res.status(400).json({ error: 'El correo electrónico ya está registrado' })];
                 return [4 /*yield*/, bcrypt_1.default.hash(password, 10)];
             case 2:
                 hashedPassword = _b.sent();
                 return [4 /*yield*/, prisma_1.prisma.user.create({
-                        data: { email: email, password: hashedPassword, name: name_1, phone: phone }
+                        data: { email: email, password: hashedPassword, name: name_1, phone: phone, propertyType: propertyType, acceptsOffers: acceptsOffers !== null && acceptsOffers !== void 0 ? acceptsOffers : true }
                     })];
             case 3:
                 user = _b.sent();
@@ -128,3 +131,84 @@ var logout = function (req, res) {
     res.json({ message: 'Logged out successfully' });
 };
 exports.logout = logout;
+var forgotPassword = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var email, user, resetToken, resetPasswordToken, resetPasswordExpires, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                email = req.body.email;
+                return [4 /*yield*/, prisma_1.prisma.user.findUnique({ where: { email: email } })];
+            case 1:
+                user = _a.sent();
+                if (!user) {
+                    // Por seguridad, no revelamos si el usuario existe o no, pero retornamos éxito aparente
+                    return [2 /*return*/, res.status(200).json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' })];
+                }
+                resetToken = crypto_1.default.randomBytes(32).toString('hex');
+                resetPasswordToken = crypto_1.default.createHash('sha256').update(resetToken).digest('hex');
+                resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
+                return [4 /*yield*/, prisma_1.prisma.user.update({
+                        where: { email: email },
+                        data: { resetPasswordToken: resetPasswordToken, resetPasswordExpires: resetPasswordExpires }
+                    })];
+            case 2:
+                _a.sent();
+                // AQUÍ IRÍA LA LÓGICA DE ENVÍO DE CORREO (ej. con Resend o Nodemailer)
+                // const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
+                // await sendEmail(user.email, 'Recuperación de contraseña Fumiguard', `Tu enlace: ${resetUrl}`);
+                console.log("[DEV ONLY] Token de recuperaci\u00F3n para ".concat(email, ": ").concat(resetToken));
+                res.status(200).json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' });
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                res.status(500).json({ error: 'Error procesando la solicitud de recuperación' });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.forgotPassword = forgotPassword;
+var resetPassword = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, token, newPassword, resetPasswordToken, user, hashedPassword, error_4;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 4, , 5]);
+                _a = req.body, token = _a.token, newPassword = _a.newPassword;
+                resetPasswordToken = crypto_1.default.createHash('sha256').update(token).digest('hex');
+                return [4 /*yield*/, prisma_1.prisma.user.findFirst({
+                        where: {
+                            resetPasswordToken: resetPasswordToken,
+                            resetPasswordExpires: { gt: new Date() }
+                        }
+                    })];
+            case 1:
+                user = _b.sent();
+                if (!user) {
+                    return [2 /*return*/, res.status(400).json({ error: 'El token de recuperación es inválido o ha expirado' })];
+                }
+                return [4 /*yield*/, bcrypt_1.default.hash(newPassword, 10)];
+            case 2:
+                hashedPassword = _b.sent();
+                return [4 /*yield*/, prisma_1.prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            password: hashedPassword,
+                            resetPasswordToken: null,
+                            resetPasswordExpires: null
+                        }
+                    })];
+            case 3:
+                _b.sent();
+                res.status(200).json({ message: 'Contraseña actualizada exitosamente. Ya puedes iniciar sesión.' });
+                return [3 /*break*/, 5];
+            case 4:
+                error_4 = _b.sent();
+                res.status(500).json({ error: 'Error restableciendo la contraseña' });
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.resetPassword = resetPassword;
