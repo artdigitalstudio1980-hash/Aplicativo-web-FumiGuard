@@ -15,7 +15,7 @@ export default function Navbar() {
     <header className="header">
       <div className="container">
         <Link href="/" className="logo">
-          <img src="/img/logo.png" alt="FUMIGUARD" className="w-10 h-10 object-contain" />
+          <img src="/img/logo_v1.png" alt="FUMIGUARD" className="w-10 h-10 object-contain" />
           <span>FUMIGUARD</span>
         </Link>
 

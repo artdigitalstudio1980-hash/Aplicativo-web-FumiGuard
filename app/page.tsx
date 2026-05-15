@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="hero min-h-[90vh] flex items-center justify-center text-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src="/img/hero.png" alt="Fumigación Profesional" className="w-full h-full object-cover opacity-20" />
+          <img src="/img/hero_v1.png" alt="Fumigación Profesional" className="w-full h-full object-cover opacity-20" />
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white"></div>
         </div>
         <div className="container relative z-10">
@@ -71,7 +71,7 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">Nuestros Servicios</h2>
             <p className="text-slate-500 text-lg">Tratamientos profesionales para cada tipo de plaga</p>
-            <img src="/img/services.png" alt="Nuestros Servicios" className="w-full rounded-3xl shadow-xl mb-16 border border-slate-100" />
+            <img src="/img/services_v1.png" alt="Nuestros Servicios" className="w-full rounded-3xl shadow-xl mb-16 border border-slate-100" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service) => (

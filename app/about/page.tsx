@@ -31,7 +31,7 @@ export default function About() {
             </div>
           </div>
           <div className="relative rounded-[3rem] overflow-hidden shadow-2xl aspect-square lg:aspect-auto lg:h-[600px]">
-             <img src="/img/team.png" alt="Nuestro equipo" className="w-full h-full object-cover" />
+             <img src="/img/team_v1.png" alt="Nuestro equipo" className="w-full h-full object-cover" />
           </div>
         </div>
 

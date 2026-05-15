@@ -26,7 +26,7 @@ export default function Catalog() {
             <div key={service.id} className="group border border-gray-100 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
               <div className="h-56 w-full relative">
                 <img 
-                  src={index % 2 === 0 ? "/img/services.png" : "/img/service_rodent.png"} 
+                  src={index % 2 === 0 ? "/img/services_v1.png" : "/img/service_rodent_v1.png"} 
                   alt={service.name} 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
