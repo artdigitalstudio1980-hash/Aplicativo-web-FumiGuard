@@ -53,6 +53,10 @@ var registerSchema = zod_1.z.object({
     propertyType: zod_1.z.string().optional(),
     acceptsOffers: zod_1.z.boolean().optional()
 });
+var loginSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+    password: zod_1.z.string().min(6),
+});
 var register = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, email, password, name_1, phone, propertyType, acceptsOffers, existingUser, hashedPassword, user, error_1;
     return __generator(this, function (_b) {
@@ -93,7 +97,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
         switch (_c.label) {
             case 0:
                 _c.trys.push([0, 4, , 5]);
-                _a = req.body, email = _a.email, password = _a.password;
+                _a = loginSchema.parse(req.body), email = _a.email, password = _a.password;
                 return [4 /*yield*/, prisma_1.prisma.user.findUnique({ where: { email: email } })];
             case 1:
                 user = _c.sent();
@@ -105,9 +109,13 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 _c.label = 3;
             case 3:
                 if (_b) {
-                    return [2 /*return*/, res.status(401).json({ error: 'Invalid credentials' })];
+                    return [2 /*return*/, res.status(401).json({ error: 'Credenciales inválidas' })];
                 }
-                token = jsonwebtoken_1.default.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '1d' });
+                if (!process.env.JWT_SECRET) {
+                    console.error('FATAL ERROR: JWT_SECRET is not defined.');
+                    return [2 /*return*/, res.status(500).json({ error: 'Error interno del servidor' })];
+                }
+                token = jsonwebtoken_1.default.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
                 // Set HTTP-only cookie
                 res.cookie('token', token, {
                     httpOnly: true,

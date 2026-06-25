@@ -29,7 +29,12 @@ var handle = app.getRequestHandler();
 app.prepare().then(function () {
     var server = (0, express_1.default)();
     // Middlewares
-    server.use((0, cors_1.default)());
+    server.use((0, cors_1.default)({
+        origin: process.env.NODE_ENV === 'production'
+            ? [process.env.NEXT_PUBLIC_APP_URL || 'https://tu-dominio.com']
+            : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+        credentials: true,
+    }));
     server.use((0, helmet_1.default)({ contentSecurityPolicy: false })); // Disable CSP in dev or configure properly
     server.use((0, morgan_1.default)('dev'));
     server.use(express_1.default.json());

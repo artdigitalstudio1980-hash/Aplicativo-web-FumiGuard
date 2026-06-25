@@ -31,7 +31,12 @@ app.prepare().then(() => {
   const server = express();
 
   // Middlewares
-  server.use(cors());
+  server.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+      ? [process.env.NEXT_PUBLIC_APP_URL || 'https://tu-dominio.com'] 
+      : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+  }));
   server.use(helmet({ contentSecurityPolicy: false })); // Disable CSP in dev or configure properly
   server.use(morgan('dev'));
   server.use(express.json());

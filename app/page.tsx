@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Calculator, ArrowRight, Shield, Clock, Award, Star } from "lucide-react";
 
 const services = [
@@ -22,7 +23,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="hero min-h-[90vh] flex items-center justify-center text-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src="/img/hero_v1.png" alt="Fumigación Profesional" className="w-full h-full object-cover opacity-20" />
+          <Image src="/img/hero_v1.png" alt="Fumigación Profesional" fill style={{objectFit: "cover"}} className="opacity-20" />
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-white"></div>
         </div>
         <div className="container relative z-10">
@@ -70,8 +71,10 @@ export default function HomePage() {
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">Nuestros Servicios</h2>
-            <p className="text-slate-500 text-lg">Tratamientos profesionales para cada tipo de plaga</p>
-            <img src="/img/services_v1.png" alt="Nuestros Servicios" className="w-full rounded-3xl shadow-xl mb-16 border border-slate-100" />
+            <p className="text-slate-500 text-lg mb-8">Tratamientos profesionales para cada tipo de plaga</p>
+            <div className="relative w-full h-[400px] mb-16 rounded-3xl overflow-hidden shadow-xl border border-slate-100">
+              <Image src="/img/services_v1.png" alt="Nuestros Servicios" fill style={{objectFit: "cover"}} />
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service) => (

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function About() {
   return (
     <div className="min-h-screen bg-white py-32 px-4 sm:px-6 lg:px-8">
@@ -31,7 +33,7 @@ export default function About() {
             </div>
           </div>
           <div className="relative rounded-[3rem] overflow-hidden shadow-2xl aspect-square lg:aspect-auto lg:h-[600px]">
-             <img src="/img/team_v1.png" alt="Nuestro equipo" className="w-full h-full object-cover" />
+             <Image src="/img/team_v1.png" alt="Nuestro equipo" fill style={{objectFit: "cover"}} />
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Catalog() {
   const services = [
@@ -25,10 +26,12 @@ export default function Catalog() {
           {services.map((service, index) => (
             <div key={service.id} className="group border border-gray-100 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
               <div className="h-56 w-full relative">
-                <img 
+                <Image 
                   src={index % 2 === 0 ? "/img/services_v1.png" : "/img/service_rodent_v1.png"} 
                   alt={service.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  style={{objectFit: "cover"}}
+                  className="group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="p-8">
