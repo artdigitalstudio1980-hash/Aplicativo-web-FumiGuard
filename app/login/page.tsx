@@ -22,7 +22,10 @@ export default function Login() {
       });
       
       if (res.ok) {
-        router.push('/dashboard');
+        // Redirección dinámica basada en parámetros de consulta (ej. /calculator)
+        const params = new URLSearchParams(window.location.search);
+        const redirectPath = params.get('redirect');
+        router.push(redirectPath || '/dashboard');
       } else {
         const data = await res.json();
         setError(data.error || 'Error al iniciar sesión');
@@ -31,6 +34,7 @@ export default function Login() {
       setError('Error de red');
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center py-32 px-4 sm:px-6 lg:px-8 bg-slate-50 relative overflow-hidden">

@@ -6,11 +6,27 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "Inicio", href: "/" },
+  { label: "Cómo funciona", href: "/how-it-works" },
+  { label: "Servicios", href: "/catalog" },
+  { label: "Calculadora", href: "/calculator" },
+  { label: "Galería", href: "/gallery" },
+  { label: "Testimonios", href: "/testimonials" },
+  { label: "FAQ", href: "/faq" },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) =>
+    path === "/" ? pathname === "/" : pathname.startsWith(path);
 
   return (
     <header className="header">
@@ -20,25 +36,17 @@ export default function Navbar() {
           <span>FUMIGUARD</span>
         </Link>
 
-        <nav className={`nav ${menuOpen ? "flex flex-col absolute top-full left-0 w-full bg-white p-4 shadow-lg" : ""}`}>
-          <Link href="/" className={isActive("/") ? "active" : ""}>
-            Inicio
-          </Link>
-          <Link href="/about" className={isActive("/about") ? "active" : ""}>
-            Cómo funciona
-          </Link>
-          <Link href="/catalog" className={isActive("/catalog") ? "active" : ""}>
-            Servicios
-          </Link>
-          <Link href="/calculator" className={isActive("/calculator") ? "active" : ""}>
-            Calculadora
-          </Link>
-          <Link href="/about" className={isActive("/about") ? "active" : ""}>
-            Testimonios
-          </Link>
-          <Link href="/about" className={isActive("/about") ? "active" : ""}>
-            FAQ
-          </Link>
+        <nav className={`nav ${menuOpen ? "flex flex-col absolute top-full left-0 w-full bg-white p-4 shadow-lg z-50" : ""}`}>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={isActive(item.href) ? "active" : ""}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="header-actions flex gap-4 items-center">
@@ -50,7 +58,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menú">
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>

@@ -38,6 +38,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createService = exports.getServices = void 0;
 var prisma_1 = require("../lib/prisma");
+var zod_1 = require("zod");
+var createServiceSchema = zod_1.z.object({
+    name: zod_1.z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+    description: zod_1.z.string().max(1000, 'La descripción no puede exceder los 1000 caracteres').optional(),
+    basePrice: zod_1.z.number().positive('El precio base debe ser un número positivo')
+});
 var getServices = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var services, error_1;
     return __generator(this, function (_a) {
@@ -59,21 +65,24 @@ var getServices = function (req, res) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.getServices = getServices;
 var createService = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name_1, description, basePrice, service, error_2;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var validatedData, service, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
-                _a = req.body, name_1 = _a.name, description = _a.description, basePrice = _a.basePrice;
+                _a.trys.push([0, 2, , 3]);
+                validatedData = createServiceSchema.parse(req.body);
                 return [4 /*yield*/, prisma_1.prisma.service.create({
-                        data: { name: name_1, description: description, basePrice: basePrice }
+                        data: validatedData
                     })];
             case 1:
-                service = _b.sent();
+                service = _a.sent();
                 res.status(201).json(service);
                 return [3 /*break*/, 3];
             case 2:
-                error_2 = _b.sent();
+                error_2 = _a.sent();
+                if (error_2 instanceof zod_1.z.ZodError) {
+                    return [2 /*return*/, res.status(400).json({ error: error_2.issues })];
+                }
                 res.status(500).json({ error: 'Internal server error' });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

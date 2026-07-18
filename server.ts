@@ -11,6 +11,7 @@ import authRoutes from './routes/authRoutes';
 import usersRoutes from './routes/usersRoutes';
 import servicesRoutes from './routes/servicesRoutes';
 import ordersRoutes from './routes/ordersRoutes';
+import { apiLimiter } from './middlewares/rateLimiter';
 // Import routes here later
 
 dotenv.config();
@@ -32,16 +33,42 @@ app.prepare().then(() => {
 
   // Middlewares
   server.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? [process.env.NEXT_PUBLIC_APP_URL || 'https://tu-dominio.com'] 
+    origin: process.env.NODE_ENV === 'production'
+      ? [process.env.NEXT_PUBLIC_APP_URL || 'https://tu-dominio.com']
       : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
   }));
-  server.use(helmet({ contentSecurityPolicy: false })); // Disable CSP in dev or configure properly
+  server.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          defaultSrc: ["'self'"],
+          // Permitir imágenes del propio sitio, data URIs y HTTPS externo (galerías).
+          imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+          // Next.js sirve scripts inline para hydration; en producción se sirven como 'self'.
+          // 'unsafe-eval' es necesario en desarrollo por el HMR de Next.
+          scriptSrc: [
+            "'self'",
+            ...(process.env.NODE_ENV !== 'production' ? ["'unsafe-inline'", "'unsafe-eval'"] : ["'unsafe-inline'"]),
+          ],
+          // Tailwind utility classes requieren inline styles.
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          // Permitir conexiones al propio origen y a Stripe Elements (futuro).
+          connectSrc: ["'self'", 'https://api.stripe.com'],
+          // Evitar que el sitio sea embebido en iframes de terceros.
+          frameAncestors: ["'none'"],
+        },
+      },
+    })
+  );
   server.use(morgan('dev'));
   server.use(express.json());
   server.use(express.urlencoded({ extended: true }));
   server.use(cookieParser());
+
+  // Apply general API Rate Limiter
+  server.use('/api', apiLimiter);
 
   // API Routes (Express)
   server.get('/api/health', (req: Request, res: Response) => {
@@ -52,6 +79,7 @@ app.prepare().then(() => {
   server.use('/api/users', usersRoutes);
   server.use('/api/services', servicesRoutes);
   server.use('/api/orders', ordersRoutes);
+
 
   // Next.js fallback handler for pages
   server.all('*', (req: Request, res: Response) => {

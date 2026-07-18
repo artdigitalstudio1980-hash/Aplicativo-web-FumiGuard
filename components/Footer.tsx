@@ -1,75 +1,91 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MapPin } from "lucide-react";
+
+const SERVICE_LINKS = [
+  { label: "Todos los servicios", href: "/catalog" },
+  { label: "Calcular precio", href: "/calculator" },
+  { label: "Galería", href: "/gallery" },
+  { label: "Contacto", href: "/contact" },
+];
+
+const COMPANY_LINKS = [
+  { label: "Cómo funciona", href: "/how-it-works" },
+  { label: "Testimonios", href: "/testimonials" },
+  { label: "Preguntas frecuentes", href: "/faq" },
+];
+
+const LEGAL_LINKS = [
+  { label: "Términos y condiciones", href: "/legal/terms" },
+  { label: "Política de privacidad", href: "/legal/privacy" },
+];
 
 export default function Footer() {
   return (
-    <>
-      {/* Contact Bar */}
-      <section className="bg-slate-900 border-b border-slate-800 py-6">
+    <footer className="footer">
+      {/* Contact bar superior */}
+      <div className="contact-bar" style={{ background: "#1e293b" }}>
         <div className="container">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-8 text-slate-300 text-sm">
-            <a href="tel:+573001234567" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-              <Phone size={18} className="text-slate-500" />
-              <span>300 123 4567</span>
+          <div className="contact-items">
+            <a href="tel:+573001234567" className="contact-item" style={{ color: "#cbd5e1" }}>
+              <span>📞</span>
+              {/* TODO: reemplazar con número real de la empresa cliente */}
+              300 123 4567
             </a>
-            <a href="mailto:contacto@fumigacionesapp.com" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-              <Mail size={18} className="text-slate-500" />
-              <span>contacto@fumigacionesapp.com</span>
+            <a href="mailto:contacto@fumigacionesapp.com" className="contact-item" style={{ color: "#cbd5e1" }}>
+              <span>✉️</span>
+              {/* TODO: reemplazar con email real de la empresa cliente */}
+              contacto@fumigacionesapp.com
             </a>
-            <span className="flex items-center gap-2">
-              <MapPin size={18} className="text-slate-500" />
-              <span>Bogotá, Colombia</span>
+            <span className="contact-item" style={{ color: "#cbd5e1" }}>
+              <span>📍</span>
+              Bogotá, Colombia
             </span>
           </div>
         </div>
-      </section>
+      </div>
 
-      <footer className="bg-slate-900 text-slate-300 py-20">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div className="md:col-span-1">
-              <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
-                <Image src="/img/logo_v1.png" alt="FUMIGUARD" width={32} height={32} className="w-8 h-8 object-contain" />
-                FUMIGUARD
-              </Link>
-              <p className="mt-6 text-sm text-slate-400 leading-relaxed">
-                Servicios profesionales de fumigación para tu hogar y empresa.
-              </p>
-            </div>
-            
-            <div className="md:col-span-1">
-              <h4 className="text-white font-bold mb-6">Servicios</h4>
-              <ul className="space-y-4 text-sm">
-                <li><Link href="/catalog" className="hover:text-emerald-500">Todos los servicios</Link></li>
-                <li><Link href="/calculator" className="hover:text-emerald-500">Calcular precio</Link></li>
-                <li><Link href="/contact" className="hover:text-emerald-500">Contacto</Link></li>
-              </ul>
-            </div>
-
-            <div className="md:col-span-1">
-              <h4 className="text-white font-bold mb-6">Empresa</h4>
-              <ul className="space-y-4 text-sm">
-                <li><Link href="/about" className="hover:text-emerald-500">Cómo funciona</Link></li>
-                <li><Link href="/about" className="hover:text-emerald-500">Testimonios</Link></li>
-                <li><Link href="/about" className="hover:text-emerald-500">Preguntas frecuentes</Link></li>
-              </ul>
-            </div>
-
-            <div className="md:col-span-1">
-              <h4 className="text-white font-bold mb-6">Legal</h4>
-              <ul className="space-y-4 text-sm">
-                <li><Link href="/about" className="hover:text-emerald-500">Términos y condiciones</Link></li>
-                <li><Link href="/about" className="hover:text-emerald-500">Política de privacidad</Link></li>
-              </ul>
-            </div>
+      {/* Footer principal */}
+      <div className="container" style={{ paddingTop: "4rem" }}>
+        <div className="footer-grid">
+          <div>
+            <Link href="/" className="footer-logo flex items-center gap-2">
+              <Image src="/img/logo_v1.png" alt="FUMIGUARD" width={40} height={40} className="w-10 h-10 object-contain" />
+              FUMIGUARD
+            </Link>
+            <p style={{ color: "#94a3b8", maxWidth: "320px", lineHeight: 1.6 }}>
+              Servicios profesionales de fumigación y control de plagas para tu
+              hogar y empresa en Bogotá y municipios cercanos.
+            </p>
           </div>
-          
-          <div className="border-t border-slate-800 mt-20 pt-8 text-center text-xs text-slate-500">
-            <p>© {new Date().getFullYear()} FUMIGUARD. Todos los derechos reservados.</p>
+
+          <div className="footer-col">
+            <h4>Servicios</h4>
+            {SERVICE_LINKS.map((l) => (
+              <Link key={l.href} href={l.href}>{l.label}</Link>
+            ))}
+          </div>
+
+          <div className="footer-col">
+            <h4>Empresa</h4>
+            {COMPANY_LINKS.map((l) => (
+              <Link key={l.href} href={l.href}>{l.label}</Link>
+            ))}
+          </div>
+
+          <div className="footer-col">
+            <h4>Legal</h4>
+            {LEGAL_LINKS.map((l) => (
+              <Link key={l.href} href={l.href}>{l.label}</Link>
+            ))}
           </div>
         </div>
-      </footer>
-    </>
+
+        <div className="footer-bottom">
+          <p>
+            © {new Date().getFullYear()} FUMIGUARD. Todos los derechos reservados.
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 }

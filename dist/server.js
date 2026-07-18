@@ -15,6 +15,7 @@ var authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 var usersRoutes_1 = __importDefault(require("./routes/usersRoutes"));
 var servicesRoutes_1 = __importDefault(require("./routes/servicesRoutes"));
 var ordersRoutes_1 = __importDefault(require("./routes/ordersRoutes"));
+var rateLimiter_1 = require("./middlewares/rateLimiter");
 // Import routes here later
 dotenv_1.default.config();
 var dev = process.env.NODE_ENV !== 'production';
@@ -40,6 +41,8 @@ app.prepare().then(function () {
     server.use(express_1.default.json());
     server.use(express_1.default.urlencoded({ extended: true }));
     server.use((0, cookie_parser_1.default)());
+    // Apply general API Rate Limiter
+    server.use('/api', rateLimiter_1.apiLimiter);
     // API Routes (Express)
     server.get('/api/health', function (req, res) {
         res.json({ status: 'ok', message: 'Express server is running alongside Next.js' });

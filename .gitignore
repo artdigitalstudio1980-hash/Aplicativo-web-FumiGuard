@@ -16,6 +16,9 @@
 # production
 /build
 
+# Express server compiled output (se regenera en cada `npm run build`)
+/dist/
+
 # misc
 .DS_Store
 *.pem

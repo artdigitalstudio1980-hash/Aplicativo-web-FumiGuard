@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { withRateLimit, apiLimiter } from '../../_lib/rateLimit';
 
-export async function POST() {
+async function logoutHandler(_req: NextRequest) {
   const response = NextResponse.json({ message: 'Logged out successfully' });
-  
+
   response.cookies.set('token', '', {
     httpOnly: true,
     expires: new Date(0),
@@ -11,3 +12,5 @@ export async function POST() {
 
   return response;
 }
+
+export const POST = withRateLimit(logoutHandler, apiLimiter);

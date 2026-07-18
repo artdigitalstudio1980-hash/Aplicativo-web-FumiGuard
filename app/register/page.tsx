@@ -43,8 +43,10 @@ export default function Register() {
       });
       
       if (res.ok) {
-        // Auto login or redirect to login
-        router.push('/login?registered=true');
+        // Redirección al dashboard ya que ahora hace autologin
+        const params = new URLSearchParams(window.location.search);
+        const redirectPath = params.get('redirect');
+        router.push(redirectPath || '/dashboard');
       } else {
         const data = await res.json();
         if (Array.isArray(data.error)) {

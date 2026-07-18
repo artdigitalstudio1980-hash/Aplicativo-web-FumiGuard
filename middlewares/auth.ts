@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-interface AuthRequest extends Request {
-  user?: any;
+export interface AuthRequest extends Request {
+  user?: {
+    userId: string;
+    role: 'CLIENT' | 'ADMIN';
+  };
 }
 
 export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -15,9 +18,26 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     return res.status(500).json({ error: 'Internal server configuration error' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err: any, user: any) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: any) => {
     if (err) return res.status(403).json({ error: 'Token is not valid' });
-    req.user = user;
+    req.user = decoded as { userId: string; role: 'CLIENT' | 'ADMIN' };
     next();
   });
 };
+
+export const requireRole = (allowedRoles: ('CLIENT' | 'ADMIN')[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
+    }
+
+    next();
+  };
+};
+
+export const requireAdmin = requireRole(['ADMIN']);
+

@@ -1,15 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../../../lib/prisma';
 import { z } from 'zod';
+import { withRateLimit, authLimiter } from '../../_lib/rateLimit';
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
 
-export async function POST(req: Request) {
+async function loginHandler(req: NextRequest) {
   try {
     const body = await req.json();
     const parsed = loginSchema.safeParse(body);
@@ -50,3 +51,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 }
+
+export const POST = withRateLimit(loginHandler, authLimiter);

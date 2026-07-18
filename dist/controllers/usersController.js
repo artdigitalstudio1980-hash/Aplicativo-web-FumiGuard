@@ -38,25 +38,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProfile = exports.getProfile = void 0;
 var prisma_1 = require("../lib/prisma");
+var zod_1 = require("zod");
+var updateProfileSchema = zod_1.z.object({
+    name: zod_1.z.string().min(2, 'El nombre debe tener al menos 2 caracteres').optional(),
+    phone: zod_1.z.string().regex(/^\+?[0-9\s-]{7,15}$/, 'Número de teléfono inválido').optional().nullable(),
+    address: zod_1.z.string().max(255, 'La dirección no puede exceder los 255 caracteres').optional().nullable(),
+});
 var getProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, user, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                userId = req.user.userId;
+                _b.trys.push([0, 2, , 3]);
+                userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+                if (!userId)
+                    return [2 /*return*/, res.status(401).json({ error: 'Unauthorized' })];
                 return [4 /*yield*/, prisma_1.prisma.user.findUnique({
                         where: { id: userId },
                         select: { id: true, email: true, name: true, phone: true, role: true, address: true, createdAt: true }
                     })];
             case 1:
-                user = _a.sent();
+                user = _b.sent();
                 if (!user)
                     return [2 /*return*/, res.status(404).json({ error: 'User not found' })];
                 res.json(user);
                 return [3 /*break*/, 3];
             case 2:
-                error_1 = _a.sent();
+                error_1 = _b.sent();
                 res.status(500).json({ error: 'Internal server error' });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
@@ -65,16 +74,19 @@ var getProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, 
 }); };
 exports.getProfile = getProfile;
 var updateProfile = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userId, _a, name_1, phone, address, updatedUser, error_2;
+    var userId, validatedData, updatedUser, error_2;
+    var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
-                userId = req.user.userId;
-                _a = req.body, name_1 = _a.name, phone = _a.phone, address = _a.address;
+                userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+                if (!userId)
+                    return [2 /*return*/, res.status(401).json({ error: 'Unauthorized' })];
+                validatedData = updateProfileSchema.parse(req.body);
                 return [4 /*yield*/, prisma_1.prisma.user.update({
                         where: { id: userId },
-                        data: { name: name_1, phone: phone, address: address },
+                        data: validatedData,
                         select: { id: true, email: true, name: true, phone: true, address: true }
                     })];
             case 1:
@@ -83,6 +95,9 @@ var updateProfile = function (req, res) { return __awaiter(void 0, void 0, void 
                 return [3 /*break*/, 3];
             case 2:
                 error_2 = _b.sent();
+                if (error_2 instanceof zod_1.z.ZodError) {
+                    return [2 /*return*/, res.status(400).json({ error: error_2.issues })];
+                }
                 res.status(500).json({ error: 'Internal server error' });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
