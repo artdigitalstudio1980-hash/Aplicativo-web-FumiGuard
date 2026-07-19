@@ -1,8 +1,8 @@
 import Image from "next/image";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import CertificationsBar from "@/components/CertificationsBar";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import CTASection from "@/components/CTASection";
+import HowItWorksSection from "../../components/HowItWorksSection";
+import CertificationsBar from "../../components/CertificationsBar";
+import TestimonialsSection from "../../components/TestimonialsSection";
+import CTASection from "../../components/CTASection";
 
 export const metadata = {
   title: "Sobre FUMIGUARD | Empresa de Fumigación en Bogotá",

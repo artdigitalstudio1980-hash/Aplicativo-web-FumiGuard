@@ -6,11 +6,11 @@ import { z } from 'zod';
 import { withRateLimit, authLimiter } from '../../_lib/rateLimit';
 
 const registerSchema = z.object({
-  email: z.string().email({ message: "Correo inválido" }),
-  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" }),
-  name: z.string().min(2, { message: "El nombre es muy corto" }),
-  phone: z.string().optional(),
-  propertyType: z.string().optional(),
+  email: z.string().trim().email({ message: "Correo inválido" }).max(255),
+  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" }).max(100),
+  name: z.string().trim().min(2, { message: "El nombre es muy corto" }).max(100),
+  phone: z.string().trim().max(20).optional(),
+  propertyType: z.string().trim().max(50).optional(),
   acceptsOffers: z.boolean().optional()
 });
 

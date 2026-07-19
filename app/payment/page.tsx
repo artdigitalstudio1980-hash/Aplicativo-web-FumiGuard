@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { QrCode, CheckCircle2, MessageCircle, Copy, AlertCircle } from 'lucide-react';
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 function PaymentContent() {
   const searchParams = useSearchParams();
@@ -69,7 +70,9 @@ function PaymentContent() {
           <div className="text-4xl font-black text-emerald-600 mb-8">{formattedPrice}</div>
           
           <div className="bg-white p-4 rounded-[2rem] shadow-sm border border-gray-100 mb-6 relative group w-48 h-48 flex items-center justify-center transition-all hover:shadow-md overflow-hidden">
-            <img src="/img/qr-nequi.jpg" alt="QR de Pago Nequi/Bancolombia" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+            <div className="relative w-full h-full">
+              <Image src="/img/qr-nequi.jpg" alt="QR de Pago Nequi/Bancolombia" fill style={{ objectFit: 'cover' }} onError={() => {}} />
+            </div>
             <QrCode size={120} className="text-slate-800 hidden" strokeWidth={1} />
           </div>
           

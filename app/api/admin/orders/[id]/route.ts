@@ -7,7 +7,7 @@ async function verifyAdmin() {
   const token = cookies().get('token')?.value;
   if (!token) return false;
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as { role: string; userId: string };
     return payload.role === 'ADMIN';
   } catch {
     return false;

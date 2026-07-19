@@ -14,12 +14,12 @@ export default async function AdminLayout({
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as { role: string; userId: string };
     
     if (payload.role !== 'ADMIN') {
       redirect('/dashboard'); // Redirigir clientes al dashboard de cliente
     }
-  } catch (err) {
+  } catch {
     redirect('/login');
   }
 

@@ -1,6 +1,6 @@
-import TestimonialsSection from '@/components/TestimonialsSection';
-import CertificationsBar from '@/components/CertificationsBar';
-import CTASection from '@/components/CTASection';
+import TestimonialsSection from '../../components/TestimonialsSection';
+import CertificationsBar from '../../components/CertificationsBar';
+import CTASection from '../../components/CTASection';
 
 export const metadata = {
   title: 'Testimonios | FUMIGUARD - Control de Plagas Bogotá',

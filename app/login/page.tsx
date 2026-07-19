@@ -11,9 +11,12 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -32,6 +35,8 @@ export default function Login() {
       }
     } catch {
       setError('Error de red');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,9 +95,10 @@ export default function Login() {
           <div className="pt-2">
             <button
               type="submit"
-              className="btn btn-primary w-full !py-4 text-lg"
+              disabled={loading}
+              className="btn btn-primary w-full !py-4 text-lg disabled:opacity-50"
             >
-              Entrar al Dashboard
+              {loading ? 'Iniciando sesión...' : 'Entrar al Dashboard'}
             </button>
           </div>
         </form>

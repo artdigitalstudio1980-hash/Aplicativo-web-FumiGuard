@@ -6,8 +6,8 @@ import { z } from 'zod';
 import { withRateLimit, authLimiter } from '../../_lib/rateLimit';
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: z.string().trim().email(),
+  password: z.string().min(6).max(100),
 });
 
 async function loginHandler(req: NextRequest) {

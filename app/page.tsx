@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Calculator, ArrowRight, Shield, Clock, Award, Star, MapPin, Phone } from "lucide-react";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import CertificationsBar from "@/components/CertificationsBar";
-import ServiceGallery from "@/components/ServiceGallery";
-import CTASection from "@/components/CTASection";
+import TestimonialsSection from "../components/TestimonialsSection";
+import HowItWorksSection from "../components/HowItWorksSection";
+import CertificationsBar from "../components/CertificationsBar";
+import ServiceGallery from "../components/ServiceGallery";
+import CTASection from "../components/CTASection";
 
 const SERVICES = [
   { id: "cucarachas", name: "Control de Cucarachas", icon: "🦟", price: "Desde $80.000" },

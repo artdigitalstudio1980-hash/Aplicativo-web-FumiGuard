@@ -1,5 +1,5 @@
-import FAQSection from '@/components/FAQSection';
-import CTASection from '@/components/CTASection';
+import FAQSection from '../../components/FAQSection';
+import CTASection from '../../components/CTASection';
 
 export const metadata = {
   title: 'Preguntas Frecuentes | FUMIGUARD - Fumigación Bogotá',

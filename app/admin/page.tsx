@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<{
+    id: string; plagueType: string; propertyType: string; areaSize: number;
+    totalPrice: number; status: string; createdAt: string;
+    user: { name: string; email: string; phone?: string };
+  }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,7 +62,7 @@ export default function AdminDashboard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
-            {orders.map((order: any) => (
+            {orders.map((order) => (
               <tr key={order.id} className="hover:bg-slate-800/50 transition-colors">
                 <td className="px-6 py-4 font-mono text-xs">{order.id.split('-')[0]}</td>
                 <td className="px-6 py-4">

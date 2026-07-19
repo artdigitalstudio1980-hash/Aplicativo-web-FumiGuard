@@ -1,5 +1,5 @@
-import ServiceGallery from '@/components/ServiceGallery';
-import CTASection from '@/components/CTASection';
+import ServiceGallery from '../../components/ServiceGallery';
+import CTASection from '../../components/CTASection';
 
 export const metadata = {
   title: 'Galería de Trabajos | FUMIGUARD - Control de Plagas Bogotá',

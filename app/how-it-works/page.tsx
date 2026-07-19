@@ -1,6 +1,6 @@
-import HowItWorksSection from '@/components/HowItWorksSection';
-import CertificationsBar from '@/components/CertificationsBar';
-import CTASection from '@/components/CTASection';
+import HowItWorksSection from '../../components/HowItWorksSection';
+import CertificationsBar from '../../components/CertificationsBar';
+import CTASection from '../../components/CTASection';
 
 export const metadata = {
   title: 'Cómo Funciona | FUMIGUARD - Fumigación Bogotá',

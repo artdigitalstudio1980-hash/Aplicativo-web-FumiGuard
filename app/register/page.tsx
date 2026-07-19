@@ -19,6 +19,24 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const getPasswordStrength = (password: string) => {
+    if (!password) return { text: '', color: 'bg-gray-200', width: 'w-0' };
+    let strength = 0;
+    if (password.length >= 6) strength++;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    if (strength <= 1) return { text: 'Débil', color: 'bg-red-500', width: 'w-1/4' };
+    if (strength <= 3) return { text: 'Media', color: 'bg-yellow-500', width: 'w-2/4' };
+    if (strength === 4) return { text: 'Fuerte', color: 'bg-blue-500', width: 'w-3/4' };
+    return { text: 'Muy Fuerte', color: 'bg-emerald-500', width: 'w-full' };
+  };
+  
+  const pwdStrength = getPasswordStrength(formData.password);
+  const passwordsMatch = formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -145,18 +163,45 @@ export default function Register() {
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
               />
+              {formData.password && (
+                <div className="mt-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-medium text-gray-500">Fortaleza: {pwdStrength.text}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                    <div className={`h-1.5 rounded-full transition-all duration-300 ${pwdStrength.color} ${pwdStrength.width}`}></div>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">Confirmar Contraseña</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-              />
+              <div className="relative">
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  className={`w-full bg-gray-50 border rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 outline-none transition-all pr-12 ${
+                    formData.confirmPassword 
+                      ? passwordsMatch 
+                        ? 'border-emerald-500 focus:ring-emerald-500' 
+                        : 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:ring-emerald-500'
+                  }`}
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                />
+                {formData.confirmPassword && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                    {passwordsMatch ? (
+                      <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    ) : (
+                      <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
