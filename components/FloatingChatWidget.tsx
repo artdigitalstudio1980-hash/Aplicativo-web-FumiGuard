@@ -60,7 +60,7 @@ export default function FloatingChatWidget() {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const WHATSAPP_NUMBER = "573192754499";
+  const WHATSAPP_NUMBER = "573205540495";
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hola, me gustaría recibir información sobre los servicios de fumigación.")}`;
 
   const scrollToBottom = () => {

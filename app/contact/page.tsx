@@ -49,7 +49,7 @@ export default function Contact() {
                 <div className="bg-emerald-100 p-4 rounded-2xl text-emerald-600"><Phone size={24} /></div>
                 <div>
                   <h4 className="font-bold text-gray-900 text-lg">Llámanos</h4>
-                  <p className="text-gray-500">+57 300 123 4567</p>
+                  <p className="text-gray-500">+57 320 554 0495</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 mb-8">

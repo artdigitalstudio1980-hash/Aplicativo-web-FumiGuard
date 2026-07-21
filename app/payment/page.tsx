@@ -19,7 +19,8 @@ function PaymentContent() {
   }).format(parseInt(price));
 
   const [copied, setCopied] = useState(false);
-  const breBKey = '3001234567'; // Llave Bre-B provisional (celular)
+  const breBKey = '@jorge563702';
+  const WHATSAPP_NUMBER = '573205540495';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(breBKey);
@@ -28,7 +29,7 @@ function PaymentContent() {
   };
 
   const whatsappMessage = encodeURIComponent(`Hola FUMIGUARD, acabo de pagar el servicio de *${service}*. Mi número de orden es *#${orderId}*. Aquí adjunto mi comprobante de pago por ${formattedPrice}.`);
-  const whatsappUrl = `https://wa.me/57${breBKey}?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
   const handleConfirmAndWhatsApp = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -92,12 +93,12 @@ function PaymentContent() {
             </div>
             
             <p className="text-gray-600 mb-6 leading-relaxed">
-              También puedes usar el sistema inmediato Bre-B ingresando nuestra llave celular:
+              También puedes usar el sistema inmediato Bre-B ingresando nuestra llave de Bancolombia:
             </p>
 
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between mb-8 shadow-sm">
               <div>
-                <p className="text-xs text-gray-400 font-bold uppercase mb-1 tracking-wider">Llave Bre-B (Celular)</p>
+                <p className="text-xs text-gray-400 font-bold uppercase mb-1 tracking-wider">Llave Bre-B (Alias)</p>
                 <p className="text-2xl font-mono font-bold text-gray-800">{breBKey}</p>
               </div>
               <button 

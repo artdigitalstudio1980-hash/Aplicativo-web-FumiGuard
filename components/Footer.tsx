@@ -26,15 +26,13 @@ export default function Footer() {
       <div className="contact-bar" style={{ background: "#1e293b" }}>
         <div className="container">
           <div className="contact-items">
-            <a href="tel:+573001234567" className="contact-item" style={{ color: "#cbd5e1" }}>
+            <a href="tel:+573205540495" className="contact-item" style={{ color: "#cbd5e1" }}>
               <span>📞</span>
-              {/* TODO: reemplazar con número real de la empresa cliente */}
-              300 123 4567
+              +57 320 554 0495
             </a>
-            <a href="mailto:contacto@fumigacionesapp.com" className="contact-item" style={{ color: "#cbd5e1" }}>
+            <a href="mailto:contacto@fumiguard.com" className="contact-item" style={{ color: "#cbd5e1" }}>
               <span>✉️</span>
-              {/* TODO: reemplazar con email real de la empresa cliente */}
-              contacto@fumigacionesapp.com
+              contacto@fumiguard.com
             </a>
             <span className="contact-item" style={{ color: "#cbd5e1" }}>
               <span>📍</span>
