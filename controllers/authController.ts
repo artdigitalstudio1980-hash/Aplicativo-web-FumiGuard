@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../lib/prisma';
 import { z } from 'zod';
@@ -27,7 +27,7 @@ export const register = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name, phone, propertyType, acceptsOffers: acceptsOffers ?? true }
+      data: { email, password: hashedPassword, name, phone, propertyType, acceptsOffers: acceptsOffers ?? false }
     });
 
     res.status(201).json({ message: 'User created successfully', userId: user.id });
@@ -44,7 +44,9 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = loginSchema.parse(req.body);
     const user = await prisma.user.findUnique({ where: { email } });
     
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    const dummyHash = '$2a$12$LJ3m4ys3Lk0TSw0E1KJZzOqk0Gf1E1X1Y1Z1W1V1U1T1S1R1Q1P1O1N1M1';
+    const passwordValid = user ? await bcrypt.compare(password, user.password) : await bcrypt.compare(password, dummyHash);
+    if (!user || !passwordValid) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
@@ -74,9 +76,13 @@ export const logout = (req: Request, res: Response) => {
   res.json({ message: 'Logged out successfully' });
 };
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Correo inválido'),
+});
+
 export const forgotPassword = async (req: Request, res: Response) => {
   try {
-    const { email } = req.body;
+    const { email } = forgotPasswordSchema.parse(req.body);
     const user = await prisma.user.findUnique({ where: { email } });
     
     if (!user) {
@@ -97,7 +103,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
     // const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
     // await sendEmail(user.email, 'Recuperación de contraseña Fumiguard', `Tu enlace: ${resetUrl}`);
     
-    console.log(`[DEV ONLY] Token de recuperación para ${email}: ${resetToken}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Token de recuperación para ${email}: ${resetToken}`);
+    }
 
     res.status(200).json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' });
   } catch (error) {

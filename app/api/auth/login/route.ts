@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../../../lib/prisma';
 import { z } from 'zod';
@@ -22,7 +22,9 @@ async function loginHandler(req: NextRequest) {
     const { email, password } = parsed.data;
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    const dummyHash = '$2a$12$LJ3m4ys3Lk0TSw0E1KJZzOqk0Gf1E1X1Y1Z1W1V1U1T1S1R1Q1P1O1N1M1';
+    const passwordValid = user ? await bcrypt.compare(password, user.password) : await bcrypt.compare(password, dummyHash);
+    if (!user || !passwordValid) {
       return NextResponse.json({ error: 'Credenciales inválidas' }, { status: 401 });
     }
 

@@ -81,8 +81,8 @@ app.prepare().then(() => {
   server.use('/api/orders', ordersRoutes);
 
 
-  // Next.js fallback handler for pages
-  server.all('*', (req: Request, res: Response) => {
+  // Next.js fallback handler for pages (Express 5 wildcard syntax)
+  server.all('/{*path}', (req: Request, res: Response) => {
     return handle(req, res);
   });
 

@@ -1,32 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../lib/prisma';
-import jwt from 'jsonwebtoken';
+import { requireAdmin } from '../../../../../lib/verifyAdmin';
 import { cookies } from 'next/headers';
+import { z } from 'zod';
 
-async function verifyAdmin() {
-  const token = cookies().get('token')?.value;
-  if (!token) return false;
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as { role: string; userId: string };
-    return payload.role === 'ADMIN';
-  } catch {
-    return false;
-  }
-}
+const OrderStatusEnum = z.enum(['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED']);
+
+const updateStatusSchema = z.object({
+  status: OrderStatusEnum,
+});
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const isAdmin = await verifyAdmin();
-  if (!isAdmin) {
+  const token = cookies().get('token')?.value;
+  const payload = requireAdmin(token);
+  if (!payload) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
   }
 
   try {
     const body = await req.json();
-    const { status } = body;
+    const parsed = updateStatusSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+    }
 
     const order = await prisma.order.update({
       where: { id: params.id },
-      data: { status }
+      data: { status: parsed.data.status }
     });
     
     return NextResponse.json(order);

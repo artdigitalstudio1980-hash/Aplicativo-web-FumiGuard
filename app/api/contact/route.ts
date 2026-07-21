@@ -27,7 +27,7 @@ async function contactHandler(req: NextRequest) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Datos inválidos', issues: parsed.error.issues },
+        { error: 'Datos inválidos. Verifica los campos e inténtalo de nuevo.' },
         { status: 400 }
       );
     }

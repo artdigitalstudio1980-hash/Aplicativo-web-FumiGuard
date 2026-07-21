@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import { requireAdmin } from '../../lib/verifyAdmin';
 
 export default async function AdminLayout({
   children,
@@ -8,19 +8,14 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   const token = cookies().get('token')?.value;
+  const payload = requireAdmin(token);
 
   if (!token) {
     redirect('/login');
   }
 
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as { role: string; userId: string };
-    
-    if (payload.role !== 'ADMIN') {
-      redirect('/dashboard'); // Redirigir clientes al dashboard de cliente
-    }
-  } catch {
-    redirect('/login');
+  if (!payload) {
+    redirect('/dashboard');
   }
 
   return (

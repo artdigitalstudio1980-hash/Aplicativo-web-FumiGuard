@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../../../lib/prisma';
 import { z } from 'zod';
@@ -20,14 +20,14 @@ async function registerHandler(req: NextRequest) {
     const parsed = registerSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues }, { status: 400 });
+      return NextResponse.json({ error: 'Datos inválidos. Verifica los campos e inténtalo de nuevo.' }, { status: 400 });
     }
 
     const { email, password, name, phone, propertyType, acceptsOffers } = parsed.data;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return NextResponse.json({ error: 'El correo electrónico ya está registrado' }, { status: 400 });
+      return NextResponse.json({ error: 'No se pudo completar el registro. Intenta con otros datos.' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,7 +38,7 @@ async function registerHandler(req: NextRequest) {
         name, 
         phone: phone || null, 
         propertyType: propertyType || null, 
-        acceptsOffers: acceptsOffers ?? true 
+        acceptsOffers: acceptsOffers ?? false 
       }
     });
 
