@@ -66,12 +66,6 @@ jobs:
           EOF
           tar czf deploy.tar.gz -C deploy .
 
-      - name: Setup SSH agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-        continue-on-error: true
-
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
@@ -82,36 +76,25 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
           SSH_USER: ${{ secrets.SSH_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p ~/domains/fumiguard.jorpat-art.com/nodejs" 2>/dev/null || {
-            sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
-            sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p ~/domains/fumiguard.jorpat-art.com/nodejs"
-          }
-          scp -P $SSH_PORT -o StrictHostKeyChecking=no deploy.tar.gz $SSH_USER@$SSH_HOST:~/domains/fumiguard.jorpat-art.com/nodejs/
-
-      - name: Extract and set up on server
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          SSH_CMD="ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST"
-          $SSH_CMD 2>/dev/null << 'DEPLOY' || sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'DEPLOY'
-            set -e
-            cd ~/domains/fumiguard.jorpat-art.com/nodejs
-            rm -rf .next dist prisma package.json package-lock.json .env
-            tar xzf deploy.tar.gz
-            rm -f deploy.tar.gz
-
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-            npm install --production --ignore-scripts 2>/dev/null || true
-            npm install prisma@5.13.0 sharp --save-dev 2>/dev/null || true
-            npx prisma generate 2>/dev/null || true
-            npx prisma db push --accept-data-loss 2>/dev/null || true
-
-            rm -f tmp/restart.txt && touch tmp/restart.txt
-            echo "Deploy complete, restart triggered"
-DEPLOY
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no \
+            -p $SSH_PORT $SSH_USER@$SSH_HOST \
+            "mkdir -p ~/domains/fumiguard.jorpat-art.com/nodejs"
+          sshpass -p "$SSH_PASSWORD" scp -P $SSH_PORT -o StrictHostKeyChecking=no \
+            deploy.tar.gz \
+            $SSH_USER@$SSH_HOST:~/domains/fumiguard.jorpat-art.com/nodejs/
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no \
+            -p $SSH_PORT $SSH_USER@$SSH_HOST \
+            "cd ~/domains/fumiguard.jorpat-art.com/nodejs && \
+            rm -rf .next dist prisma package.json package-lock.json .env && \
+            tar xzf deploy.tar.gz && rm -f deploy.tar.gz && \
+            export NVM_DIR=\"\$HOME/.nvm\" && \
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" && \
+            npm install --production --ignore-scripts 2>/dev/null || true && \
+            npm install prisma@5.13.0 sharp --save-dev 2>/dev/null || true && \
+            npx prisma generate 2>/dev/null || true && \
+            npx prisma db push --accept-data-loss 2>/dev/null || true && \
+            rm -f tmp/restart.txt && touch tmp/restart.txt && \
+            echo 'Deploy complete, restart triggered'"
