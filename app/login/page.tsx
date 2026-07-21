@@ -49,7 +49,7 @@ export default function Login() {
       
       <div className="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 relative z-10">
         <div className="text-center mb-10">
-          <Image src="/img/logo_v1.png" alt="FUMIGUARD" width={64} height={64} className="mx-auto mb-4" />
+          <Image src="/img/logo.svg" alt="FUMIGUARD" width={64} height={64} className="mx-auto mb-4" />
           <h2 className="text-3xl font-extrabold text-gray-900">
             Iniciar Sesión
           </h2>

@@ -32,7 +32,7 @@ export default function Navbar() {
     <header className="header">
       <div className="container">
         <Link href="/" className="logo">
-          <Image src="/img/logo_v1.png" alt="FUMIGUARD" width={40} height={40} className="w-10 h-10 object-contain" />
+          <Image src="/img/logo.svg" alt="FUMIGUARD" width={40} height={40} className="w-10 h-10" />
           <span>FUMIGUARD</span>
         </Link>
 

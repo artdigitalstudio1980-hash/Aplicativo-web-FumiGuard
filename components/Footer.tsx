@@ -49,7 +49,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div>
             <Link href="/" className="footer-logo flex items-center gap-2">
-              <Image src="/img/logo_v1.png" alt="FUMIGUARD" width={40} height={40} className="w-10 h-10 object-contain" />
+              <Image src="/img/logo.svg" alt="FUMIGUARD" width={40} height={40} className="w-10 h-10" />
               FUMIGUARD
             </Link>
             <p style={{ color: "#94a3b8", maxWidth: "320px", lineHeight: 1.6 }}>

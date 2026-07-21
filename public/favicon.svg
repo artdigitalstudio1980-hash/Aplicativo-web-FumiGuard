@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <defs>
+    <linearGradient id="fg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="20" fill="url(#fg)"/>
+  <path d="M48 8 L88 28 L88 60 C88 80 68 93 48 100 C28 93 8 80 8 60 L8 28 Z"
+        fill="rgba(255,255,255,0.15)"/>
+  <path d="M48 18 L80 34 L80 58 C80 74 64 86 48 92 C32 86 16 74 16 58 L16 34 Z"
+        fill="white" opacity="0.9"/>
+  <!-- F monogram -->
+  <g transform="translate(48, 55)" fill="#059669">
+    <rect x="-14" y="-28" width="6" height="46" rx="3"/>
+    <rect x="-8" y="-28" width="22" height="6" rx="3"/>
+    <rect x="-8" y="-10" width="18" height="6" rx="3"/>
+  </g>
+</svg>

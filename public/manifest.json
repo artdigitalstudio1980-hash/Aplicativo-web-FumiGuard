@@ -1,0 +1,17 @@
+{
+  "name": "FUMIGUARD - Control de Plagas Premium",
+  "short_name": "FUMIGUARD",
+  "description": "Servicio profesional de fumigación y control de plagas en Bogotá.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
