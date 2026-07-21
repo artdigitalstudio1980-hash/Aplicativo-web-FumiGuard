@@ -96,5 +96,5 @@ jobs:
             npm install prisma@5.13.0 sharp --save-dev 2>/dev/null || true && \
             npx prisma generate 2>/dev/null || true && \
             npx prisma db push --accept-data-loss 2>/dev/null || true && \
-            rm -f tmp/restart.txt && touch tmp/restart.txt && \
+            mkdir -p tmp && rm -f tmp/restart.txt && touch tmp/restart.txt && \
             echo 'Deploy complete, restart triggered'"
