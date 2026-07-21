@@ -1,0 +1,104 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Build Next.js
+        run: npx next build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Compile Express server
+        run: npx tsc --project tsconfig.server.json
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy
+          cp -r .next deploy/
+          cp -r dist deploy/
+          cp -r prisma deploy/
+          cp package.json deploy/
+          cp package-lock.json deploy/
+          cat > deploy/.env << EOF
+          DATABASE_URL='${{ secrets.DATABASE_URL }}'
+          PORT='3000'
+          NODE_ENV='production'
+          JWT_SECRET='${{ secrets.JWT_SECRET }}'
+          STRIPE_SECRET_KEY='${{ secrets.STRIPE_SECRET_KEY }}'
+          STRIPE_WEBHOOK_SECRET='${{ secrets.STRIPE_WEBHOOK_SECRET }}'
+          SMTP_HOST='${{ secrets.SMTP_HOST }}'
+          SMTP_PORT='${{ secrets.SMTP_PORT }}'
+          SMTP_USER='${{ secrets.SMTP_USER }}'
+          SMTP_PASS='${{ secrets.SMTP_PASS }}'
+          EOF
+          tar czf deploy.tar.gz -C deploy .
+
+      - name: Deploy to Hostinger
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "mkdir -p ~/domains/fumiguard.jorpat-art.com/nodejs"
+          sshpass -p "$SSH_PASSWORD" scp -P $SSH_PORT -o StrictHostKeyChecking=no deploy.tar.gz $SSH_USER@$SSH_HOST:~/domains/fumiguard.jorpat-art.com/nodejs/
+
+      - name: Extract and set up on server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'DEPLOY'
+            set -e
+            cd ~/domains/fumiguard.jorpat-art.com/nodejs
+            rm -rf .next dist prisma package.json package-lock.json .env
+            tar xzf deploy.tar.gz
+            rm -f deploy.tar.gz
+
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            npm install --production --ignore-scripts 2>/dev/null || true
+            npm install prisma@5.13.0 sharp --save-dev 2>/dev/null || true
+            npx prisma generate 2>/dev/null || true
+            npx prisma db push --accept-data-loss 2>/dev/null || true
+
+            rm -f tmp/restart.txt && touch tmp/restart.txt
+            echo "Deploy complete, restart triggered"
+DEPLOY
