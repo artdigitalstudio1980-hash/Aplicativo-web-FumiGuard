@@ -14,22 +14,14 @@ export default function CTASection({
   buttonHref = '/calculator',
 }: CTASectionProps) {
   return (
-    <section className="container pb-24">
-      <div className="bg-emerald-600 rounded-3xl p-12 sm:p-16 text-center text-white relative overflow-hidden">
-        {/* Decoración de fondo */}
-        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-emerald-500/40 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-emerald-700/40 blur-3xl" />
-
+    <section className="container py-20">
+      <div className="cta-block">
         <div className="relative z-10">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
-            {title}
-          </h2>
-          <p className="text-lg sm:text-xl opacity-90 mb-10 max-w-2xl mx-auto">
-            {subtitle}
-          </p>
+          <h2>{title}</h2>
+          <p>{subtitle}</p>
           <Link
             href={buttonHref}
-            className="bg-white text-emerald-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all inline-block shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            className="btn btn-white btn-lg inline-flex items-center gap-2 shadow-lg hover:shadow-xl"
           >
             {buttonText}
           </Link>

@@ -63,25 +63,28 @@ app.prepare().then(() => {
     })
   );
   server.use(morgan('dev'));
-  server.use(express.json());
-  server.use(express.urlencoded({ extended: true }));
   server.use(cookieParser());
 
   // Apply general API Rate Limiter
   server.use('/api', apiLimiter);
 
+  // Apply JSON body parsing ONLY to Express API routes (not Next.js route handlers)
+  const jsonParser = express.json();
+  const urlencodedParser = express.urlencoded({ extended: true });
+
   // API Routes (Express)
-  server.get('/api/health', (req: Request, res: Response) => {
+  server.get('/api/health', jsonParser, (req: Request, res: Response) => {
     res.json({ status: 'ok', message: 'Express server is running alongside Next.js' });
   });
 
-  server.use('/api/auth', authRoutes);
-  server.use('/api/users', usersRoutes);
-  server.use('/api/services', servicesRoutes);
-  server.use('/api/orders', ordersRoutes);
+  server.use('/api/auth', jsonParser, urlencodedParser, authRoutes);
+  server.use('/api/users', jsonParser, urlencodedParser, usersRoutes);
+  server.use('/api/services', jsonParser, urlencodedParser, servicesRoutes);
+  server.use('/api/orders', jsonParser, urlencodedParser, ordersRoutes);
 
 
   // Next.js fallback handler for pages (Express 5 wildcard syntax)
+  // IMPORTANT: No express.json() here — Next.js App Router reads its own body
   server.all('/{*path}', (req: Request, res: Response) => {
     return handle(req, res);
   });

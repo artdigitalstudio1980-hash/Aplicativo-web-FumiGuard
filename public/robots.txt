@@ -1,1 +1,8 @@
 Sitemap: https://fumiguard.jorpat-art.com/sitemap.xml
+
+# Allow all AI and search crawlers
+User-agent: *
+Allow: /
+
+# Respectful crawling
+Crawl-delay: 1

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Camera, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface GalleryItem {
@@ -9,8 +9,6 @@ interface GalleryItem {
   title: string;
   category: 'Servicio' | 'Equipo' | 'Antes/Después' | 'Certificación';
   description: string;
-  // Cuando lleguen las fotos reales, se reemplaza gradient por `image: '/img/galeria/X.jpg'`
-  // y el componente prioriza image sobre gradient.
   image?: string;
   gradient: string;
   icon: string;
@@ -22,6 +20,7 @@ const ITEMS: GalleryItem[] = [
     title: 'Fumigación de cucarachas en cocina industrial',
     category: 'Servicio',
     description: 'Tratamiento con gel y aspersión en restaurante de Chapinero. Resultado verificado en 72h.',
+    image: '/img/gallery/fumigation-industrial.jpg',
     gradient: 'from-emerald-200 via-emerald-300 to-teal-400',
     icon: '🦟',
   },
@@ -30,6 +29,7 @@ const ITEMS: GalleryItem[] = [
     title: 'Control de roedores en bodega',
     category: 'Servicio',
     description: 'Instalación de cebos de captura segura y sellado de puntos de ingreso en zona industrial.',
+    image: '/img/gallery/rodent-control.jpg',
     gradient: 'from-amber-200 via-orange-300 to-red-400',
     icon: '🐀',
   },
@@ -38,6 +38,7 @@ const ITEMS: GalleryItem[] = [
     title: 'Técnico FUMIGUARD con equipo de protección',
     category: 'Equipo',
     description: 'Nuestro personal cuenta con EPP completo y capacitación continua.',
+    image: '/img/gallery/technician.jpg',
     gradient: 'from-sky-200 via-blue-300 to-indigo-400',
     icon: '👷',
   },
@@ -46,6 +47,7 @@ const ITEMS: GalleryItem[] = [
     title: 'Lavado y desinfección de tanque de agua',
     category: 'Servicio',
     description: 'Limpieza profunda con certificación sanitaria para conjunto residencial en el norte.',
+    image: '/img/gallery/fumigation-residential.jpg',
     gradient: 'from-cyan-200 via-sky-300 to-blue-400',
     icon: '💧',
   },
@@ -54,6 +56,7 @@ const ITEMS: GalleryItem[] = [
     title: 'Antes: vivienda afectada por termitas',
     category: 'Antes/Después',
     description: 'Daño estructural en madera de apartamento en Usaquén antes del tratamiento.',
+    image: '/img/gallery/termite-damage.jpg',
     gradient: 'from-rose-200 via-pink-300 to-fuchsia-400',
     icon: '🪵',
   },
@@ -70,6 +73,7 @@ const ITEMS: GalleryItem[] = [
     title: 'Termonebulización en exteriores',
     category: 'Servicio',
     description: 'Control de mosquitos en zonas comunes de condominio campestre.',
+    image: '/img/gallery/fogging.jpg',
     gradient: 'from-yellow-200 via-amber-300 to-orange-400',
     icon: '🌫️',
   },
@@ -97,88 +101,87 @@ export default function ServiceGallery() {
   const openLightbox = (item: GalleryItem) => setLightbox(item);
   const closeLightbox = () => setLightbox(null);
 
-  const navigate = (dir: 1 | -1) => {
+  const navigate = useCallback((dir: 1 | -1) => {
     if (!lightbox) return;
     const idx = filtered.findIndex((it) => it.id === lightbox.id);
     if (idx < 0) return;
     const next = filtered[(idx + dir + filtered.length) % filtered.length];
     setLightbox(next);
-  };
+  }, [lightbox, filtered]);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [lightbox, navigate]);
 
   return (
     <div className="w-full">
-      {/* Filtros */}
       <div className="flex flex-wrap justify-center gap-2 mb-10">
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
-              activeCategory === cat
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
+            className="px-4 py-2 rounded-full text-xs font-semibold transition-all border"
+            style={{
+              background: activeCategory === cat ? 'var(--accent)' : 'var(--bg-tertiary)',
+              color: activeCategory === cat ? 'white' : 'var(--text-muted)',
+              borderColor: activeCategory === cat ? 'var(--accent)' : 'var(--border)'
+            }}
           >
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Grid de galería */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {filtered.map((item) => (
           <button
             key={item.id}
             onClick={() => openLightbox(item)}
-            className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 text-left"
+            className="group relative aspect-square rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 text-left"
             aria-label={`Ver ${item.title}`}
           >
-            {/* Background gradient o imagen real */}
             {item.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={item.image}
                 alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${item.gradient} group-hover:scale-110 transition-transform duration-500`}
-              >
-                <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-80 group-hover:opacity-100 transition-opacity">
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} group-hover:scale-105 transition-transform duration-500`}>
+                <div className="absolute inset-0 flex items-center justify-center text-5xl opacity-80">
                   {item.icon}
                 </div>
-                <div className="absolute top-3 right-3 bg-amber-500/90 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
+                <div className="absolute top-2 right-2 bg-amber-500/90 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
                   Demo
                 </div>
               </div>
             )}
-
-            {/* Overlay con info */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-5">
-              <span className="text-emerald-300 text-[10px] font-bold uppercase tracking-widest mb-1">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent flex flex-col justify-end p-4">
+              <span className="text-xs font-semibold mb-0.5" style={{ color: 'var(--accent)' }}>
                 {item.category}
               </span>
-              <h4 className="text-white font-bold text-sm leading-snug line-clamp-2">
+              <h4 className="text-white font-semibold text-sm leading-snug line-clamp-2">
                 {item.title}
               </h4>
             </div>
-
-            {/* Icono de cámara en hover */}
-            <div className="absolute top-3 left-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Camera size={16} className="text-slate-700" />
+            <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Camera size={14} className="text-slate-700" />
             </div>
           </button>
         ))}
       </div>
 
-      {/* Nota para el equipo */}
-      <p className="text-center text-xs text-slate-400 mt-8 italic">
-        Las imágenes con gradiente son placeholders de demostración. Reemplazar con
-        fotos reales en <code className="bg-slate-100 px-2 py-0.5 rounded">components/ServiceGallery.tsx</code>
+      <p className="text-center text-xs mt-6 italic" style={{ color: 'var(--text-light)' }}>
+        Las imágenes con gradiente son placeholders de demostración.
       </p>
 
-      {/* Lightbox */}
       {lightbox && (
         <div
           className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-sm flex items-center justify-center p-4"
@@ -209,27 +212,27 @@ export default function ServiceGallery() {
           </button>
 
           <div
-            className="max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl"
+            className="max-w-4xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className={`aspect-video bg-gradient-to-br ${lightbox.gradient} flex items-center justify-center text-9xl relative`}
-            >
-              {lightbox.icon}
-              <span className="absolute top-4 right-4 bg-amber-500/90 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">
-                Demo
-              </span>
+            <div className={`aspect-video relative ${lightbox.image ? '' : `bg-gradient-to-br ${lightbox.gradient} flex items-center justify-center text-8xl`}`}>
+              {lightbox.image ? (
+                <img src={lightbox.image} alt={lightbox.title} className="absolute inset-0 w-full h-full object-cover" />
+              ) : (
+                <>
+                  {lightbox.icon}
+                  <span className="absolute top-4 right-4 bg-amber-500/90 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">
+                    Demo
+                  </span>
+                </>
+              )}
             </div>
-            <div className="p-8">
-              <span className="inline-block text-emerald-600 text-xs font-bold uppercase tracking-widest mb-2">
+            <div className="p-6">
+              <span className="inline-block text-xs font-semibold mb-2" style={{ color: 'var(--accent)' }}>
                 {lightbox.category}
               </span>
-              <h3 className="text-2xl font-extrabold text-slate-900 mb-3">
-                {lightbox.title}
-              </h3>
-              <p className="text-slate-600 leading-relaxed">
-                {lightbox.description}
-              </p>
+              <h3 className="text-xl font-bold text-[var(--text)] mb-2">{lightbox.title}</h3>
+              <p className="text-sm text-[var(--text-secondary)]">{lightbox.description}</p>
             </div>
           </div>
         </div>

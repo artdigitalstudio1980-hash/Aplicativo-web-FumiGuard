@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import FloatingChatWidget from "../components/FloatingChatWidget";
+import ScrollObserver from "../components/ScrollObserver";
+import BackToTop from "../components/BackToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -76,6 +78,38 @@ export const metadata: Metadata = {
   category: "pest control",
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://fumiguard.jorpat-art.com",
+  name: "FUMIGUARD",
+  description: "Expertos en fumigación y control de plagas en Bogotá. Técnicos certificados, garantía escrita.",
+  url: "https://fumiguard.jorpat-art.com",
+  telephone: "+57-320-554-0495",
+  email: "contacto@fumiguard.com",
+  foundingDate: "2010",
+  areaServed: [
+    { "@type": "City", name: "Bogotá" },
+    { "@type": "City", name: "Chía" },
+    { "@type": "City", name: "Cota" },
+    { "@type": "City", name: "Soacha" },
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Bogotá",
+    addressCountry: "CO",
+  },
+  image: "https://fumiguard.jorpat-art.com/img/logo.svg",
+  sameAs: [],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    bestRating: "5",
+    ratingCount: "5000",
+  },
+  priceRange: "$180,000+",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -84,10 +118,16 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <ScrollObserver />
         <Navbar />
         <main>
           {children}
         </main>
+        <BackToTop />
         <FloatingChatWidget />
         <Footer />
       </body>

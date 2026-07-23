@@ -29,7 +29,7 @@ const FAQS: FAQItem[] = [
   {
     id: 4,
     question: '¿Necesito prepararme antes de la visita?',
-    answer: 'Sí. Te enviamos una guía completa al confirmar el servicio, pero en resumen: despejar las zonas a tratar, cubrir alimentos y utensilios de cocina, y facilitar el acceso a las áreas afectadas. Para casos especiales (termitas) se requiere preparación adicional.',
+    answer: 'Sí. Te enviamos una guía completa al confirmar el servicio, pero en resumen: despejar las zonas a tratar, cubrir alimentos y utensilios de cocina, y facilitar el acceso a las áreas afectadas.',
   },
   {
     id: 5,
@@ -54,11 +54,8 @@ const FAQS: FAQItem[] = [
 ];
 
 interface FAQSectionProps {
-  /** Mostrar el header de la sección (default true). */
   showHeader?: boolean;
-  /** Limitar cantidad de preguntas (default: todas). */
   limit?: number;
-  /** Variante visual: light (default) o dark. */
   variant?: 'light' | 'dark';
 }
 
@@ -71,62 +68,53 @@ export default function FAQSection({
 
   const list = limit ? FAQS.slice(0, limit) : FAQS;
   const isDark = variant === 'dark';
-  const bgClass = isDark ? 'bg-slate-900' : 'bg-slate-50';
-  const titleClass = isDark ? 'text-white' : 'text-slate-900';
-  const subtitleClass = isDark ? 'text-slate-400' : 'text-slate-600';
-  const cardClass = isDark
-    ? 'bg-slate-800/60 border border-slate-700'
-    : 'bg-white border border-slate-200';
-  const questionClass = isDark ? 'text-white' : 'text-slate-900';
-  const answerClass = isDark ? 'text-slate-300' : 'text-slate-600';
-  const contactClass = isDark
-    ? 'bg-slate-800/40 border border-slate-700'
-    : 'bg-emerald-50/60 border border-emerald-100';
 
   return (
-    <section className={`py-24 ${bgClass}`}>
+    <section className={`py-20 ${isDark ? 'bg-[var(--text)]' : 'bg-[var(--bg-secondary)]'}`}>
       <div className="container">
         {showHeader && (
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-4">
+            <span className="section-label">
               <HelpCircle size={14} />
               Preguntas frecuentes
             </span>
-            <h2 className={`text-4xl md:text-5xl font-extrabold ${titleClass} mb-4`}>
-              Resolvemos tus dudas
-            </h2>
-            <p className={`text-lg ${subtitleClass} max-w-2xl mx-auto`}>
-              Las preguntas que más nos hacen nuestros clientes. Si tienes otra
-              pregunta, escríbenos por WhatsApp.
+            <h2 className={isDark ? 'text-white' : ''}>Resolvemos tus dudas</h2>
+            <p className={`text-lg max-w-xl mx-auto ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-secondary)]'}`}>
+              Las preguntas que más nos hacen nuestros clientes.
             </p>
           </div>
         )}
 
-        <div className="max-w-3xl mx-auto space-y-3">
+        <div className="max-w-3xl mx-auto space-y-2">
           {list.map((faq) => {
             const isOpen = openId === faq.id;
             return (
               <div
                 key={faq.id}
-                className={`${cardClass} rounded-2xl overflow-hidden transition-all`}
+                className={`rounded-xl overflow-hidden transition-all ${
+                  isDark
+                    ? 'bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)]'
+                    : 'bg-white border border-[var(--border)]'
+                }`}
               >
                 <button
                   onClick={() => setOpenId(isOpen ? null : faq.id)}
-                  className="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left"
+                  className="w-full flex items-center justify-between gap-4 p-5 text-left"
                   aria-expanded={isOpen}
                 >
-                  <span className={`font-bold text-base sm:text-lg ${questionClass}`}>
+                  <span className={`font-semibold text-base ${isDark ? 'text-white' : 'text-[var(--text)]'}`}>
                     {faq.question}
                   </span>
                   <ChevronDown
-                    size={20}
+                    size={18}
                     className={`shrink-0 transition-transform ${
-                      isOpen ? 'rotate-180 text-emerald-500' : 'text-slate-400'
-                    }`}
+                      isOpen ? 'rotate-180' : ''
+                    } ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-muted)]'}`}
+                    style={isOpen ? { color: 'var(--accent)' } : undefined}
                   />
                 </button>
                 {isOpen && (
-                  <div className={`px-5 sm:px-6 pb-5 sm:pb-6 ${answerClass} leading-relaxed`}>
+                  <div className={`px-5 pb-5 leading-relaxed text-sm ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-secondary)]'}`}>
                     {faq.answer}
                   </div>
                 )}
@@ -136,17 +124,18 @@ export default function FAQSection({
         </div>
 
         {showHeader && (
-          <div className={`mt-12 max-w-3xl mx-auto ${contactClass} rounded-2xl p-6 sm:p-8 text-center`}>
-            <h3 className={`text-xl font-bold ${titleClass} mb-2`}>
+          <div className={`mt-10 max-w-3xl mx-auto p-6 sm:p-8 text-center rounded-xl ${
+            isDark
+              ? 'bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)]'
+              : 'bg-white border border-[var(--border)]'
+          }`}>
+            <h3 className={`text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-[var(--text)]'}`}>
               ¿Tienes otra pregunta?
             </h3>
-            <p className={`${subtitleClass} mb-5`}>
+            <p className={`text-sm mb-5 ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-muted)]'}`}>
               Estamos disponibles por WhatsApp de lunes a sábado de 7am a 8pm.
             </p>
-            <Link
-              href="/contact"
-              className="btn btn-primary !bg-emerald-600 hover:!bg-emerald-700"
-            >
+            <Link href="/contact" className="btn btn-primary">
               Escríbenos
             </Link>
           </div>

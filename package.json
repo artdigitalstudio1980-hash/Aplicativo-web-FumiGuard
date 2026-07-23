@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --watch server.ts --watch routes --watch controllers --watch middlewares --watch services --exec ts-node --project tsconfig.server.json server.ts",
+    "dev": "NODE_ENV=development nodemon --watch server.ts --watch routes --watch controllers --watch middlewares --watch services --exec ts-node --project tsconfig.server.json server.ts",
     "clean": "rm -rf .next dist",
     "build": "npm run clean && npx prisma generate && next build && tsc --project tsconfig.server.json",
     "build:deploy": "npm run clean && npx prisma generate && npx prisma db push && next build && tsc --project tsconfig.server.json",

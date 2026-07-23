@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { withRateLimit, apiLimiter } from '../_lib/rateLimit';
 
 const contactSchema = z.object({
   name: z
@@ -13,6 +12,10 @@ const contactSchema = z.object({
     .trim()
     .email('Correo electrónico inválido')
     .max(255, 'El correo no puede exceder 255 caracteres'),
+  phone: z
+    .string()
+    .trim()
+    .optional(),
   message: z
     .string()
     .trim()
@@ -20,7 +23,7 @@ const contactSchema = z.object({
     .max(2000, 'El mensaje no puede exceder 2000 caracteres'),
 });
 
-async function contactHandler(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     const parsed = contactSchema.safeParse(data);
@@ -32,8 +35,6 @@ async function contactHandler(req: NextRequest) {
       );
     }
 
-    // En un escenario real, esto enviaría un correo o guardaría en la base de datos.
-    // Como la base de datos está en Hostinger y no tenemos un servicio de correo configurado:
     console.log('Nuevo mensaje de contacto recibido:', parsed.data);
 
     return NextResponse.json(
@@ -48,5 +49,3 @@ async function contactHandler(req: NextRequest) {
     );
   }
 }
-
-export const POST = withRateLimit(contactHandler, apiLimiter);

@@ -11,7 +11,6 @@ export default function Dashboard() {
   const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
-    // In a real app, these should use SWR or React Query
     const fetchData = async () => {
       try {
         const profileRes = await fetch('/api/users/profile');
@@ -30,44 +29,50 @@ export default function Dashboard() {
     fetchData();
   }, [router]);
 
-  if (!user) return <div className="min-h-screen flex items-center justify-center text-white">Cargando...</div>;
+  if (!user) return <div className="min-h-screen flex items-center justify-center text-[var(--text-muted)]">Cargando...</div>;
 
   return (
-    <div className="min-h-screen bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[var(--text)] py-20 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Dashboard de Cliente</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Profile Widget */}
-          <div className="glass-panel p-8 rounded-2xl md:col-span-1">
-            <h2 className="text-xl font-semibold mb-6 border-b border-white/10 pb-4">Mi Perfil</h2>
-            <div className="space-y-4">
-              <p><span className="text-gray-400 block text-sm">Nombre</span> {user.name}</p>
-              <p><span className="text-gray-400 block text-sm">Email</span> {user.email}</p>
-              <p><span className="text-gray-400 block text-sm">Teléfono</span> {user.phone || 'No registrado'}</p>
-              <button className="mt-4 w-full py-2 rounded bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+        <h1 className="text-2xl font-bold text-white mb-8">Dashboard de Cliente</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <h2 className="text-lg font-semibold text-white mb-5 pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>Mi Perfil</h2>
+            <div className="space-y-3 text-sm">
+              <p><span className="block text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Nombre</span> <span className="text-white">{user.name}</span></p>
+              <p><span className="block text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Email</span> <span className="text-white">{user.email}</span></p>
+              <p><span className="block text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Teléfono</span> <span className="text-white">{user.phone || 'No registrado'}</span></p>
+              <button className="mt-3 w-full py-2 rounded-lg text-sm transition-colors" style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 Editar Perfil
               </button>
             </div>
           </div>
 
-          {/* Orders List */}
-          <div className="glass-panel p-8 rounded-2xl md:col-span-2">
-            <h2 className="text-xl font-semibold mb-6 border-b border-white/10 pb-4">Mis Servicios Agendados</h2>
-            
+          <div className="p-6 rounded-xl md:col-span-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <h2 className="text-lg font-semibold text-white mb-5 pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>Mis Servicios Agendados</h2>
+
             {orders.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">Aún no has solicitado ningún servicio.</p>
+              <p className="text-center py-8" style={{ color: 'rgba(255,255,255,0.3)' }}>Aún no has solicitado ningún servicio.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {orders.map((order: any) => (
-                  <div key={order.id} className="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center">
+                  <div key={order.id} className="p-4 rounded-xl flex justify-between items-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                     <div>
-                      <h3 className="font-bold text-emerald-400 capitalize">{order.plagueType}</h3>
-                      <p className="text-sm text-gray-400">{new Date(order.createdAt).toLocaleDateString()} - {order.propertyType}</p>
+                      <h3 className="font-semibold text-white capitalize">{order.plagueType}</h3>
+                      <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                        {new Date(order.createdAt).toLocaleDateString()} - {order.propertyType}
+                      </p>
                     </div>
                     <div className="text-right">
-                      <span className="block font-bold">${new Intl.NumberFormat('es-CO').format(order.totalPrice)} COP</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'PENDING' ? 'bg-yellow-500/20 text-yellow-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
+                      <span className="block font-semibold text-white">
+                        ${new Intl.NumberFormat('es-CO').format(order.totalPrice)} COP
+                      </span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        order.status === 'PENDING'
+                          ? 'bg-yellow-500/20 text-yellow-300'
+                          : 'bg-emerald-500/20 text-emerald-300'
+                      }`}>
                         {order.status}
                       </span>
                     </div>

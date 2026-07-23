@@ -24,8 +24,6 @@ const STATIC_FALLBACK_SERVICES: Service[] = [
 function CalculatorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  // Cargar parámetros iniciales desde la URL
   const queryServiceId = searchParams.get('serviceId');
 
   const [services, setServices] = useState<Service[]>(STATIC_FALLBACK_SERVICES);
@@ -36,17 +34,17 @@ function CalculatorContent() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // 1. Obtener lista de servicios desde el API
   useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+
     async function fetchServices() {
       try {
-        const response = await fetch('/api/services');
+        const response = await fetch('/api/services', { signal: controller.signal });
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
             setServices(data);
-            
-            // Establecer servicio inicial si viene de query params
             if (queryServiceId) {
               const matched = data.find(s => s.id === queryServiceId);
               if (matched) setSelectedService(matched);
@@ -55,38 +53,18 @@ function CalculatorContent() {
             }
           }
         }
-      } catch (err) {
-        console.warn('No se pudo conectar al API, usando servicios locales de respaldo.', err);
+      } catch {
+        console.warn('Usando servicios locales de respaldo.');
       } finally {
+        clearTimeout(timeout);
         setLoadingServices(false);
       }
     }
     fetchServices();
+
+    return () => { clearTimeout(timeout); controller.abort(); };
   }, [queryServiceId]);
 
-  // Cargar cotización pendiente de localStorage si existe (flujo post-login)
-  useEffect(() => {
-    const pendingQuoteStr = localStorage.getItem('pending_quote');
-    if (pendingQuoteStr) {
-      try {
-        const pendingQuote = JSON.parse(pendingQuoteStr);
-        if (pendingQuote.areaSize) setM2(pendingQuote.areaSize);
-        if (pendingQuote.propertyType) setPropertyType(pendingQuote.propertyType);
-        
-        // Intentar emparejar el servicio que estaba pendiente
-        if (pendingQuote.serviceId && services.length > 0) {
-          const matched = services.find(s => s.id === pendingQuote.serviceId);
-          if (matched) setSelectedService(matched);
-        }
-        
-        localStorage.removeItem('pending_quote');
-      } catch (e) {
-        console.error('Error al recuperar la cotización pendiente:', e);
-      }
-    }
-  }, [services]);
-
-  // Si no se cargó el servicio inicial por API, buscarlo en la lista por defecto
   useEffect(() => {
     if (!selectedService && services.length > 0) {
       if (queryServiceId) {
@@ -98,20 +76,32 @@ function CalculatorContent() {
     }
   }, [services, queryServiceId, selectedService]);
 
+  useEffect(() => {
+    const pendingQuoteStr = localStorage.getItem('pending_quote');
+    if (pendingQuoteStr) {
+      try {
+        const pendingQuote = JSON.parse(pendingQuoteStr);
+        if (pendingQuote.areaSize) setM2(pendingQuote.areaSize);
+        if (pendingQuote.propertyType) setPropertyType(pendingQuote.propertyType);
+        if (pendingQuote.serviceId && services.length > 0) {
+          const matched = services.find(s => s.id === pendingQuote.serviceId);
+          if (matched) setSelectedService(matched);
+        }
+        localStorage.removeItem('pending_quote');
+      } catch (e) {
+        console.error('Error al recuperar la cotización pendiente:', e);
+      }
+    }
+  }, [services]);
 
   const calculatePrice = () => {
     if (!selectedService) return 180000;
     const basePrice = selectedService.basePrice;
-    
-    // Recargo por tamaño de área (similar a la lógica del backend)
     let calculatedPrice = basePrice;
     if (m2 > 100) {
-      calculatedPrice += (m2 - 100) * 1000; 
+      calculatedPrice += (m2 - 100) * 1000;
     }
-    
-    // Multiplicador según tipo de inmueble
     const typeMultiplier = propertyType === 'Comercial' ? 1.2 : (propertyType === 'Industrial' ? 1.5 : 1.0);
-    
     return Math.max(Math.round(calculatedPrice * typeMultiplier), 180000);
   };
 
@@ -135,7 +125,6 @@ function CalculatorContent() {
       });
 
       if (response.status === 401) {
-        // Redirigir a iniciar sesión y guardar la cotización para agendar automáticamente
         localStorage.setItem('pending_quote', JSON.stringify({
           ...orderPayload,
           serviceName: selectedService.name,
@@ -151,8 +140,6 @@ function CalculatorContent() {
       }
 
       const order = await response.json();
-      
-      // Redirigir al flujo de pago
       router.push(`/payment?service=${encodeURIComponent(selectedService.name)}&price=${order.totalPrice}&orderId=${order.id}`);
 
     } catch (err: unknown) {
@@ -167,35 +154,34 @@ function CalculatorContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto relative z-10">
-      <div className="text-center mb-16">
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold mb-6 backdrop-blur-md">
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-12 reveal">
+        <span className="section-label">
           <Sparkles size={14} />
-          Cotización Inmediata y Transparente
+          Cotización Inmediata
         </span>
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
-          Calculadora de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Precio</span>
+        <h1>
+          Calculadora de <span className="text-gradient">Precio</span>
         </h1>
-        <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+        <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
           Calcula el costo del servicio sanitario en Bogotá según los metros cuadrados de tu inmueble.
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-5 rounded-2xl text-sm text-center font-medium mb-8 flex items-center justify-center gap-2 backdrop-blur-md">
+        <div className="flex items-center gap-2 p-4 mb-6 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-100">
           <AlertCircle size={18} />
           {error}
         </div>
       )}
 
-      <div className="bg-slate-900/60 border border-slate-800 p-8 sm:p-10 rounded-[2.5rem] shadow-2xl backdrop-blur-md grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div className="space-y-8">
-          {/* Selección de Servicio */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 rounded-2xl bg-[var(--bg)] border border-[var(--border)] shadow-lg">
+        <div className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-slate-300 mb-4">Servicio de Fumigación</label>
+            <label className="form-label">Servicio de Fumigación</label>
             {loadingServices ? (
-              <div className="flex items-center gap-2 text-slate-400 py-3">
-                <Loader2 size={16} className="animate-spin text-emerald-500" />
+              <div className="flex items-center gap-2 text-[var(--text-muted)] py-3">
+                <Loader2 size={16} className="animate-spin" />
                 <span>Cargando catálogo...</span>
               </div>
             ) : (
@@ -205,7 +191,7 @@ function CalculatorContent() {
                   const matched = services.find(s => s.id === e.target.value);
                   if (matched) setSelectedService(matched);
                 }}
-                className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-emerald-500 outline-none transition-all cursor-pointer"
+                className="form-input"
               >
                 {services.map((service) => (
                   <option key={service.id} value={service.id}>
@@ -216,39 +202,38 @@ function CalculatorContent() {
             )}
           </div>
 
-          {/* Medición de Área */}
           <div>
-            <label className="block text-sm font-bold text-slate-300 mb-4 flex justify-between">
+            <label className="form-label flex justify-between">
               <span>Área Aproximada del Inmueble</span>
-              <span className="text-emerald-400 font-bold">{m2} m²</span>
+              <span className="font-bold text-[var(--accent)]">{m2} m²</span>
             </label>
-            <input 
-              type="range" 
-              min="20" 
-              max="1000" 
+            <input
+              type="range"
+              min="20"
+              max="1000"
               value={m2}
               onChange={(e) => setM2(parseInt(e.target.value))}
-              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+              style={{ background: 'var(--bg-tertiary)', accentColor: 'var(--accent)' }}
             />
-            <div className="flex justify-between text-xs text-slate-500 mt-2 font-mono">
+            <div className="flex justify-between text-xs mt-1 text-[var(--text-light)]">
               <span>20 m²</span>
               <span>500 m²</span>
               <span>1000 m²</span>
             </div>
           </div>
 
-          {/* Tipo de Inmueble */}
           <div>
-            <label className="block text-sm font-bold text-slate-300 mb-4">Tipo de Inmueble / Propiedad</label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <label className="form-label">Tipo de Inmueble</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {['Residencial', 'Comercial', 'Industrial'].map((type) => (
                 <button
                   key={type}
                   onClick={() => setPropertyType(type)}
-                  className={`px-4 py-3.5 rounded-2xl text-center font-bold text-sm transition-all border-2 ${
-                    propertyType === type 
-                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-lg shadow-emerald-500/5' 
-                      : 'border-slate-800 bg-slate-950/40 text-slate-400 hover:border-slate-700'
+                  className={`px-4 py-3 rounded-xl text-center font-semibold text-sm transition-all border ${
+                    propertyType === type
+                      ? 'bg-[var(--accent)] text-white border-[var(--accent)]'
+                      : 'bg-[var(--bg-secondary)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--accent)]'
                   }`}
                 >
                   {type}
@@ -258,48 +243,47 @@ function CalculatorContent() {
           </div>
         </div>
 
-        {/* Resumen y Cotización */}
-        <div className="bg-gradient-to-br from-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-8 text-white flex flex-col justify-between">
+        <div className="rounded-xl p-6 flex flex-col justify-between bg-[var(--bg-secondary)] border border-[var(--border)]">
           <div>
-            <div className="flex items-center gap-3 mb-6 opacity-60">
-              <CalcIcon size={20} className="text-emerald-400" />
-              <span className="text-xs font-bold tracking-widest uppercase font-mono">Valor Total de Cotización</span>
+            <div className="flex items-center gap-2 mb-4">
+              <CalcIcon size={18} className="text-[var(--accent)]" />
+              <span className="text-xs font-bold tracking-widest uppercase text-[var(--text-muted)]">Valor Total de Cotización</span>
             </div>
-            <div className="text-4xl sm:text-5xl font-extrabold mb-4 text-white">
+            <div className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-4">
               ${calculatePrice().toLocaleString('es-CO')}
-              <span className="text-xs font-normal text-slate-400 block mt-2">COP (IVA e Insumos Incluidos)</span>
+              <span className="text-xs font-normal block mt-1 text-[var(--text-muted)]">COP (IVA e Insumos Incluidos)</span>
             </div>
-            
-            <ul className="space-y-4 mt-8 border-t border-slate-850 pt-6">
-              <li className="flex items-center gap-3 text-sm text-slate-300">
-                <CheckCircle size={16} className="text-emerald-500 shrink-0" />
+
+            <ul className="space-y-3 mt-6 pt-5 border-t border-[var(--border)]">
+              <li className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <CheckCircle size={16} className="text-[var(--accent)]" />
                 Certificado de Sanidad Gubernamental
               </li>
-              <li className="flex items-center gap-3 text-sm text-slate-300">
-                <CheckCircle size={16} className="text-emerald-500 shrink-0" />
+              <li className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <CheckCircle size={16} className="text-[var(--accent)]" />
                 Fórmulas de uso seguro (Norma Técnica)
               </li>
-              <li className="flex items-center gap-3 text-sm text-slate-300">
-                <CheckCircle size={16} className="text-emerald-500 shrink-0" />
+              <li className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <CheckCircle size={16} className="text-[var(--accent)]" />
                 Garantía por escrito del servicio
               </li>
             </ul>
           </div>
 
-          <button 
+          <button
             onClick={handleBookOrder}
             disabled={submitting || !selectedService}
-            className="flex items-center justify-center gap-2 w-full py-4 mt-8 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
+            className="btn btn-primary w-full mt-6 justify-center text-base"
           >
             {submitting ? (
               <>
-                <Loader2 size={20} className="animate-spin" />
+                <Loader2 size={18} className="animate-spin" />
                 Agendando...
               </>
             ) : (
               <>
                 Agendar Ahora
-                <ArrowRight size={20} />
+                <ArrowRight size={18} />
               </>
             )}
           </button>
@@ -311,15 +295,10 @@ function CalculatorContent() {
 
 export default function PriceCalculator() {
   return (
-    <div className="min-h-screen bg-slate-950 py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background blurs */}
-      <div className="absolute top-1/4 right-10 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 left-10 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-      <Suspense fallback={<div className="text-center mt-32 text-slate-400">Iniciando cotizador...</div>}>
+    <div className="min-h-screen bg-[var(--bg-secondary)] py-20 px-4">
+      <Suspense fallback={<div className="text-center mt-20 text-[var(--text-muted)]">Iniciando cotizador...</div>}>
         <CalculatorContent />
       </Suspense>
     </div>
   );
 }
-

@@ -6,17 +6,12 @@ import Link from 'next/link';
 interface Testimonial {
   id: number;
   name: string;
-  // Iniciales que se muestran en el avatar circular
   initials: string;
-  // Color de fondo del avatar (placeholder hasta tener foto real)
   avatarColor: string;
-  // Barrio/localidad de Bogotá (para dar contexto local)
   location: string;
   rating: number;
   text: string;
-  // Tipo de servicio contratado (para dar credibilidad)
   service: string;
-  // Fecha relativa, p. ej. "hace 2 semanas"
   when: string;
 }
 
@@ -79,11 +74,8 @@ const TESTIMONIALS: Testimonial[] = [
 ];
 
 interface TestimonialsSectionProps {
-  /** Mostrar header de la sección (default true). Poner false cuando se usa en página propia. */
   showHeader?: boolean;
-  /** Limitar cantidad de testimonios (default: todos). */
   limit?: number;
-  /** Variante visual: 'light' (default) o 'dark' para fondos oscuros. */
   variant?: 'light' | 'dark';
 }
 
@@ -95,86 +87,59 @@ export default function TestimonialsSection({
   const list = limit ? TESTIMONIALS.slice(0, limit) : TESTIMONIALS;
 
   const isDark = variant === 'dark';
-  const bgClass = isDark ? 'bg-slate-950' : 'bg-white';
-  const titleClass = isDark ? 'text-white' : 'text-slate-900';
-  const subtitleClass = isDark ? 'text-slate-400' : 'text-slate-500';
-  const cardClass = isDark
-    ? 'bg-slate-900/60 border border-slate-800 backdrop-blur-md'
-    : 'bg-slate-50 border border-slate-100';
-  const textClass = isDark ? 'text-slate-300' : 'text-slate-700';
-  const mutedClass = isDark ? 'text-slate-400' : 'text-slate-500';
-  const linkClass = isDark ? 'text-emerald-400' : 'text-emerald-600';
 
   return (
-    <section className={`py-24 ${bgClass}`}>
+    <section className={`py-20 ${isDark ? 'bg-[var(--text)]' : 'bg-[var(--bg-secondary)]'}`}>
       <div className="container">
         {showHeader && (
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold mb-6">
-              <Star size={14} fill="currentColor" />
+          <div className="text-center mb-12">
+            <span className="section-label">
+              <Star size={14} />
               Testimonios reales
             </span>
-            <h2 className={`text-4xl md:text-5xl font-extrabold ${titleClass} mb-4`}>
-              Lo que dicen nuestros clientes
-            </h2>
-            <p className={`text-lg ${subtitleClass} max-w-2xl mx-auto`}>
+            <h2 className={isDark ? 'text-white' : ''}>Lo que dicen nuestros clientes</h2>
+            <p className={`text-lg max-w-xl mx-auto ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-secondary)]'}`}>
               Más de 5.000 hogares y empresas en Bogotá han confiado en FUMIGUARD.
-              Estas son algunas de sus historias.
             </p>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
           {list.map((t) => (
             <article
               key={t.id}
-              className={`${cardClass} p-8 rounded-2xl shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 relative`}
+              className={`testimonial-card ${
+                isDark
+                  ? 'bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.06)]'
+                  : ''
+              }`}
             >
-              <Quote
-                size={32}
-                className={`absolute top-4 right-4 ${isDark ? 'text-emerald-500/20' : 'text-emerald-500/15'}`}
-              />
+              <Quote size={24} className={`absolute top-4 right-4 ${isDark ? 'text-white/5' : 'text-[var(--text-light)]'}`} />
 
-              {/* Estrellas */}
-              <div className="flex gap-1 text-amber-400 mb-4">
+              <div className="flex gap-1 text-amber-400 mb-3">
                 {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    fill={i < t.rating ? 'currentColor' : 'none'}
-                    strokeWidth={i < t.rating ? 0 : 1.5}
-                  />
+                  <Star key={i} size={14} fill={i < t.rating ? 'currentColor' : 'none'} strokeWidth={i < t.rating ? 0 : 1.5} />
                 ))}
               </div>
 
-              {/* Texto */}
-              <p className={`${textClass} leading-relaxed mb-6 italic`}>
+              <p className={`text-sm leading-relaxed mb-4 italic ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-secondary)]'}`}>
                 &ldquo;{t.text}&rdquo;
               </p>
 
-              {/* Servicio */}
-              <span
-                className={`inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-5 ${
-                  isDark
-                    ? 'bg-emerald-500/10 text-emerald-300'
-                    : 'bg-emerald-50 text-emerald-700'
-                }`}
-              >
+              <span className="inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4"
+                style={{ background: 'var(--accent-light)', color: 'var(--accent-dark)' }}>
                 {t.service}
               </span>
 
-              {/* Autor */}
-              <div className="flex items-center gap-3 pt-5 border-t border-slate-200/30">
-                <div
-                  className={`w-12 h-12 rounded-full ${t.avatarColor} flex items-center justify-center text-white font-bold text-sm shadow-sm`}
-                >
+              <div className="flex items-center gap-3 pt-3" style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid var(--border-light)' }}>
+                <div className={`w-10 h-10 rounded-full ${t.avatarColor} flex items-center justify-center text-white font-bold text-xs shadow-sm`}>
                   {t.initials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`font-bold text-sm ${titleClass}`}>{t.name}</p>
-                  <div className={`flex items-center gap-2 text-xs ${mutedClass} mt-0.5`}>
+                  <p className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-[var(--text)]'}`}>{t.name}</p>
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? 'text-[var(--text-light)]' : 'text-[var(--text-muted)]'}`}>
                     <span className="flex items-center gap-1">
-                      <MapPin size={11} />
+                      <MapPin size={10} />
                       {t.location}
                     </span>
                     <span>·</span>
@@ -188,10 +153,7 @@ export default function TestimonialsSection({
 
         {showHeader && (
           <div className="text-center">
-            <Link
-              href="/testimonials"
-              className={`${linkClass} font-bold inline-flex items-center gap-2 hover:underline`}
-            >
+            <Link href="/testimonials" className="text-sm font-semibold hover:underline" style={{ color: 'var(--accent)' }}>
               Ver todos los testimonios
             </Link>
           </div>

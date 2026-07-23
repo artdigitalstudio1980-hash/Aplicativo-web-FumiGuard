@@ -27,18 +27,22 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+
     async function fetchServices() {
       try {
-        const response = await fetch('/api/services');
+        const response = await fetch('/api/services', { signal: controller.signal });
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
             setServices(data);
           }
         }
-      } catch (error) {
-        console.warn('No se pudo conectar al API de servicios, usando catálogo local de respaldo.', error);
+      } catch {
+        console.warn('Usando catálogo local de respaldo.');
       } finally {
+        clearTimeout(timeout);
         setLoading(false);
       }
     }
@@ -46,80 +50,62 @@ export default function Catalog() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-1/4 left-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-20">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold mb-6 backdrop-blur-md">
+    <div className="min-h-screen bg-[var(--bg-secondary)] py-20 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12 reveal">
+          <span className="section-label">
             <Sparkles size={14} />
-            Control de Plagas Certificado en Bogotá
+            Servicios Certificados
           </span>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
-            Nuestro Catálogo de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Servicios</span>
+          <h1>
+            Nuestro Catálogo de <span className="text-gradient">Servicios</span>
           </h1>
-          <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-            Soluciones sanitarias y técnicas profesionales adaptadas a locales de comida rápida, restaurantes, empresas, oficinas y hogares.
+          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+            Soluciones sanitarias y técnicas profesionales adaptadas a restaurantes, empresas, oficinas y hogares.
           </p>
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-12 w-12 text-emerald-500 animate-spin mb-4" />
-            <p className="text-slate-400">Cargando catálogo certificado de Fumiguard...</p>
+            <Loader2 className="h-10 w-10 text-[var(--accent)] animate-spin mb-4" />
+            <p className="text-[var(--text-muted)]">Cargando catálogo...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="card-grid-3 stagger-children">
             {services.map((service, index) => (
-              <div 
-                key={service.id} 
-                className="group relative border border-slate-800 bg-slate-900/50 hover:bg-slate-950/40 rounded-3xl overflow-hidden transition-all duration-500 backdrop-blur-md shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/40 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="h-56 w-full relative overflow-hidden">
-                    <Image 
-                      src={index % 2 === 0 ? "/img/services_v1.png" : "/img/service_rodent_v1.png"} 
-                      alt={service.name} 
-                      fill
-                      style={{objectFit: "cover"}}
-                      className="group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-                  </div>
-                  
-                  <div className="p-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs border border-emerald-500/20">
-                        <Shield size={12} className="inline mr-1" />
-                        Certificado
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors duration-300">
-                      {service.name}
-                    </h3>
-                    <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                      {service.description || 'Tratamiento profesional adaptado a la normatividad sanitaria de Bogotá.'}
-                    </p>
-                  </div>
+              <div key={service.id} className="card flex flex-col p-0 overflow-hidden">
+                <div className="h-48 relative overflow-hidden bg-[var(--bg-tertiary)]">
+                  <Image
+                    src={index % 2 === 0 ? "/img/services_v1.png" : "/img/service_rodent_v1.png"}
+                    alt={service.name}
+                    fill
+                    style={{objectFit: "cover"}}
+                    className="opacity-80 hover:opacity-100 transition-opacity"
+                  />
                 </div>
-
-                <div className="p-8 pt-0 mt-auto">
-                  <div className="flex justify-between items-baseline mb-6 border-t border-slate-800/80 pt-6">
-                    <span className="text-sm text-slate-500">Precio base estimado</span>
-                    <span className="text-2xl font-extrabold text-white">
-                      ${service.basePrice.toLocaleString('es-CO')}
-                      <span className="text-xs font-normal text-slate-400 block text-right mt-1">COP</span>
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="mb-2">
+                    <span className="badge badge-accent">
+                      <Shield size={10} className="inline mr-1" />
+                      Certificado
                     </span>
                   </div>
-                  
-                  <Link 
-                    href={`/calculator?serviceId=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.basePrice}`} 
-                    className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all duration-300 shadow-lg shadow-emerald-600/20 group-hover:shadow-emerald-500/30"
+                  <h3 className="font-semibold text-lg mb-2">{service.name}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-1">
+                    {service.description || 'Tratamiento profesional adaptado a la normatividad sanitaria de Bogotá.'}
+                  </p>
+                  <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--border)]">
+                    <span className="text-xs text-[var(--text-muted)]">Precio base estimado</span>
+                    <span className="text-xl font-bold text-[var(--accent)]">
+                      ${service.basePrice.toLocaleString('es-CO')}
+                    </span>
+                  </div>
+                  <Link
+                    href={`/calculator?serviceId=${service.id}&name=${encodeURIComponent(service.name)}&price=${service.basePrice}`}
+                    className="btn btn-primary w-full mt-4 justify-center"
                   >
                     Agendar Cotización
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight size={16} />
                   </Link>
                 </div>
               </div>
@@ -130,4 +116,3 @@ export default function Catalog() {
     </div>
   );
 }
-

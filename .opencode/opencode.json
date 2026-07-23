@@ -1,0 +1,155 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "devsecops",
+  "model": "anthropic/claude-sonnet-4-6",
+  "instructions": ["AGENTS.md", ".opencode/INSTRUCTIONS.md"],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "agent": {
+    "devsecops": {
+      "description": "CEO de ingeniería — Arquitecto Fullstack DevSecOps. Orquesta proyectos web completos: arquitectura, desarrollo, seguridad, CI/CD, despliegue.",
+      "mode": "primary",
+      "model": "anthropic/claude-sonnet-4-6",
+      "permission": {
+        "edit": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "task": "allow",
+        "webfetch": "allow",
+        "websearch": "allow",
+        "bash": {
+          "git *": "allow",
+          "npm *": "allow",
+          "npx *": "allow",
+          "rm -rf *": "deny",
+          "*": "allow"
+        }
+      },
+      "prompt": "Eres el CEO de Ingeniería DevSecOps. Lee .opencode/agents/devsecops.md para tus instrucciones completas. Usa skill devsecops como tu guía técnica principal."
+    },
+    "security-auditor": {
+      "description": "Auditor de seguridad OWASP — SAST, DAST, hardening, rate limiting, CSP, auth review.",
+      "mode": "subagent",
+      "model": "anthropic/claude-sonnet-4-6",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "bash": {
+          "npm audit *": "allow",
+          "npx snyk *": "allow",
+          "*": "ask"
+        },
+        "edit": "ask"
+      },
+      "prompt": "Eres un Auditor de Seguridad Senior. Lee .opencode/agents/security-auditor.md para tus instrucciones completas. Carga el skill 'ciberseguridad' para auditorías detalladas OWASP."
+    },
+    "deployment-engineer": {
+      "description": "Ingeniero de despliegue DevOps — CI/CD, Docker, Hostinger, PM2, DNS, SSL, monitoreo.",
+      "mode": "subagent",
+      "model": "anthropic/claude-sonnet-4-6",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "bash": {
+          "npm run build": "allow",
+          "docker *": "ask",
+          "*": "ask"
+        },
+        "edit": "ask"
+      },
+      "prompt": "Eres un Ingeniero de Despliegue Senior. Lee .opencode/agents/deployment-engineer.md para tus instrucciones completas."
+    },
+    "qa-tester": {
+      "description": "Ingeniero de QA — Tests unitarios, integración, E2E, Playwright, TestSprite, cobertura.",
+      "mode": "subagent",
+      "model": "anthropic/claude-sonnet-4-6",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "bash": {
+          "npm test *": "allow",
+          "npx vitest *": "allow",
+          "npx playwright *": "allow",
+          "*": "ask"
+        },
+        "edit": "ask"
+      },
+      "prompt": "Eres un Ingeniero de QA Senior. Lee .opencode/agents/qa-tester.md para tus instrucciones completas."
+    },
+    "code-reviewer": {
+      "description": "Revisor de código senior — TypeScript, React, seguridad, rendimiento, accesibilidad, calidad.",
+      "mode": "subagent",
+      "model": "anthropic/claude-sonnet-4-6",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "edit": "ask",
+        "bash": {
+          "npm run lint": "allow",
+          "npx eslint *": "allow",
+          "*": "ask"
+        }
+      },
+      "prompt": "Eres un Code Reviewer Senior. Lee .opencode/agents/code-reviewer.md para tus instrucciones completas."
+    }
+  },
+  "command": {
+    "devsecops": {
+      "description": "Invoca al CEO DevSecOps para desarrollar, auditar o desplegar proyectos profesionalmente.",
+      "agent": "devsecops",
+      "template": "Eres el CEO DevSecOps. El usuario ha ejecutado el comando devsecops con los siguientes argumentos:\n\n$ARGUMENTS\n\nCarga el skill 'devsecops' y procede con el flujo de trabajo completo según el tipo de solicitud."
+    },
+    "security-audit": {
+      "description": "Ejecuta una auditoría de seguridad completa OWASP sobre el proyecto.",
+      "agent": "security-auditor",
+      "template": "Realiza una auditoría de seguridad OWASP completa sobre este proyecto. Carga el skill 'ciberseguridad'. $ARGUMENTS"
+    },
+    "deploy": {
+      "description": "Despliega la aplicación en producción usando la configuración de Hostinger.",
+      "agent": "deployment-engineer",
+      "template": "Prepara y ejecuta el despliegue a producción. Carga el skill 'devops-ci-cd-master'. $ARGUMENTS"
+    },
+    "qa": {
+      "description": "Ejecuta la suite completa de tests y genera reporte de calidad.",
+      "agent": "qa-tester",
+      "template": "Ejecuta todos los tests del proyecto y genera un reporte de calidad completo. $ARGUMENTS"
+    },
+    "review": {
+      "description": "Revisa el código de los archivos modificados o especificados.",
+      "agent": "code-reviewer",
+      "template": "Revisa el código de los cambios recientes o los archivos especificados. $ARGUMENTS"
+    }
+  },
+  "mcp": {
+    "Context7": {
+      "enabled": true
+    },
+    "GitHub": {
+      "enabled": true
+    },
+    "TestSprite": {
+      "enabled": true
+    },
+    "hostinger-hosting": {
+      "enabled": true
+    },
+    "hostinger-domains": {
+      "enabled": true
+    },
+    "hostinger-dns": {
+      "enabled": true
+    },
+    "hostinger-billing": {
+      "enabled": true
+    },
+    "hostinger-reach": {
+      "enabled": true
+    }
+  }
+}

@@ -25,7 +25,6 @@ export default function Login() {
       });
       
       if (res.ok) {
-        // Redirección dinámica basada en parámetros de consulta (ej. /calculator)
         const params = new URLSearchParams(window.location.search);
         const redirectPath = params.get('redirect');
         router.push(redirectPath || '/dashboard');
@@ -40,67 +39,61 @@ export default function Login() {
     }
   };
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center py-32 px-4 sm:px-6 lg:px-8 bg-slate-50 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 transform translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 transform -translate-x-1/2 translate-y-1/2"></div>
-      
-      <div className="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 relative z-10">
-        <div className="text-center mb-10">
-          <Image src="/img/logo.svg" alt="FUMIGUARD" width={64} height={64} className="mx-auto mb-4" />
-          <h2 className="text-3xl font-extrabold text-gray-900">
+    <div className="min-h-screen flex items-center justify-center py-24 px-4 bg-[var(--bg-secondary)]">
+      <div className="max-w-sm w-full bg-white p-8 rounded-[var(--radius-xl)] shadow-lg border border-[var(--border-light)]">
+        <div className="text-center mb-6">
+          <Image src="/img/logo.svg" alt="FUMIGUARD" width={48} height={48} className="mx-auto mb-3" />
+          <h2 className="text-xl font-bold text-[var(--text)]">
             Iniciar Sesión
           </h2>
-          <p className="mt-3 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
             ¿No tienes cuenta?{' '}
-            <Link href="/register" className="font-bold text-emerald-600 hover:text-emerald-500 transition-colors">
+            <Link href="/register" className="font-semibold text-[var(--accent)] hover:underline">
               Regístrate aquí
             </Link>
           </p>
         </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && <div className="bg-red-50 text-red-500 p-4 rounded-2xl text-sm text-center font-medium border border-red-100">{error}</div>}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico</label>
-              <input
-                type="email"
-                required
-                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                placeholder="juan@ejemplo.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center font-medium border border-red-100">
+              {error}
             </div>
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-bold text-gray-700">Contraseña</label>
-                <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors">
-                  ¿Olvidaste tu contraseña?
-                </Link>
-              </div>
-              <input
-                type="password"
-                required
-                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-gray-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+          )}
+          <div>
+            <label className="form-label">Correo Electrónico</label>
+            <input
+              type="email"
+              required
+              className="form-input"
+              placeholder="juan@ejemplo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <label className="form-label">Contraseña</label>
+              <Link href="/forgot-password" className="text-xs font-medium text-[var(--accent)] hover:underline">
+                ¿Olvidaste tu contraseña?
+              </Link>
             </div>
+            <input
+              type="password"
+              required
+              className="form-input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary w-full !py-4 text-lg disabled:opacity-50"
-            >
-              {loading ? 'Iniciando sesión...' : 'Entrar al Dashboard'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn btn-primary w-full !py-3.5 disabled:opacity-50"
+          >
+            {loading ? 'Iniciando sesión...' : 'Entrar al Dashboard'}
+          </button>
         </form>
       </div>
     </div>

@@ -43,6 +43,13 @@ Migration is in progress. Check both locations before adding new endpoints:
 - **Password Hashing:** bcrypt with 12+ salt rounds. No MD5/SHA1 for passwords.
 - **Cookies:** `httpOnly: true`, `secure: true` in production, `sameSite: 'strict'`.
 
+## DevSecOps Agent System
+- **Default Agent:** `devsecops` (CEO Fullstack orchestrator) registered in `.opencode/opencode.json`
+- **Subagents:** `security-auditor`, `deployment-engineer`, `qa-tester`, `code-reviewer`
+- **Commands:** `/devsecops`, `/security-audit`, `/deploy`, `/qa`, `/review`
+- **Skills:** `devsecops` in `.opencode/skills/devsecops/SKILL.md`
+- **Instructions:** See `.opencode/INSTRUCTIONS.md` for agent usage
+
 ## Critical Constraints
 - **NO Separated Projects:** Do not create a separate backend or frontend folder.
 - **SMTP:** Configured for Hostinger SMTP, but `forgotPassword` in `controllers/authController.ts` is half-wired (logs to console).

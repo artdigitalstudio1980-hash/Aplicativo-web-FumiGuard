@@ -22,19 +22,14 @@ const LEGAL_LINKS = [
 export default function Footer() {
   return (
     <footer className="footer">
-      {/* Contact bar superior */}
-      <div className="contact-bar" style={{ background: "#1e293b" }}>
+      <div className="footer-top">
         <div className="container">
-          <div className="contact-items">
-            <a href="tel:+573205540495" className="contact-item" style={{ color: "#cbd5e1" }}>
-              <span>📞</span>
-              +57 320 554 0495
-            </a>
-            <a href="mailto:contacto@fumiguard.com" className="contact-item" style={{ color: "#cbd5e1" }}>
+          <div className="footer-contact-items">
+            <a href="mailto:contacto@fumiguard.com" className="footer-contact-item">
               <span>✉️</span>
               contacto@fumiguard.com
             </a>
-            <span className="contact-item" style={{ color: "#cbd5e1" }}>
+            <span className="footer-contact-item">
               <span>📍</span>
               Bogotá, Colombia
             </span>
@@ -42,46 +37,45 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Footer principal */}
-      <div className="container" style={{ paddingTop: "4rem" }}>
-        <div className="footer-grid">
-          <div>
-            <Link href="/" className="footer-logo flex items-center gap-2">
-              <Image src="/img/logo.svg" alt="FUMIGUARD" width={40} height={40} className="w-10 h-10" />
-              FUMIGUARD
-            </Link>
-            <p style={{ color: "#94a3b8", maxWidth: "320px", lineHeight: 1.6 }}>
-              Servicios profesionales de fumigación y control de plagas para tu
-              hogar y empresa en Bogotá y municipios cercanos.
-            </p>
+      <div className="footer-main">
+        <div className="container">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <Link href="/" className="logo" style={{ color: "white" }}>
+                <Image src="/img/logo.svg" alt="FUMIGUARD" width={36} height={36} />
+                <span className="logo-text" style={{ color: "white" }}>FUMIGUARD</span>
+              </Link>
+              <p>
+                Servicios profesionales de fumigación y control de plagas para tu
+                hogar y empresa en Bogotá y municipios cercanos.
+              </p>
+            </div>
+
+            <div className="footer-col">
+              <h4>Servicios</h4>
+              {SERVICE_LINKS.map((l) => (
+                <Link key={l.href} href={l.href}>{l.label}</Link>
+              ))}
+            </div>
+
+            <div className="footer-col">
+              <h4>Empresa</h4>
+              {COMPANY_LINKS.map((l) => (
+                <Link key={l.href} href={l.href}>{l.label}</Link>
+              ))}
+            </div>
+
+            <div className="footer-col">
+              <h4>Legal</h4>
+              {LEGAL_LINKS.map((l) => (
+                <Link key={l.href} href={l.href}>{l.label}</Link>
+              ))}
+            </div>
           </div>
 
-          <div className="footer-col">
-            <h4>Servicios</h4>
-            {SERVICE_LINKS.map((l) => (
-              <Link key={l.href} href={l.href}>{l.label}</Link>
-            ))}
+          <div className="footer-bottom">
+            <p>© {new Date().getFullYear()} FUMIGUARD. Todos los derechos reservados.</p>
           </div>
-
-          <div className="footer-col">
-            <h4>Empresa</h4>
-            {COMPANY_LINKS.map((l) => (
-              <Link key={l.href} href={l.href}>{l.label}</Link>
-            ))}
-          </div>
-
-          <div className="footer-col">
-            <h4>Legal</h4>
-            {LEGAL_LINKS.map((l) => (
-              <Link key={l.href} href={l.href}>{l.label}</Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p>
-            © {new Date().getFullYear()} FUMIGUARD. Todos los derechos reservados.
-          </p>
         </div>
       </div>
     </footer>
